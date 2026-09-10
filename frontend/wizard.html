@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional Setup — NEXA-GUARD</title>
+    <meta name="description"
+        content="NEXA-GUARD Smart Hostel Infrastructure Setup — Configure your institution's hostel, blocks, gates, access policies, and administrator account.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        nexa: { dark: '#060a12', card: '#0c1524', border: '#1a2640', blue: '#3b82f6', emerald: '#10b981', amber: '#f59e0b', red: '#ef4444', purple: '#8b5cf6' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        #map {
+            height: 280px;
+            width: 100%;
+            border-radius: 0.75rem;
+            z-index: 10;
+        }
+
+        .leaflet-container {
+            background-color: #0c1524;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .step-section {
+            animation: fadeInUp 0.35s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-fill {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .inp {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 0.75rem;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.8125rem;
+            color: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+            outline: none;
+        }
+
+        .inp:focus {
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+        }
+
+        .inp::placeholder {
+            color: #64748b;
+        }
+
+        .lbl {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 0.375rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .hint {
+            font-size: 0.6875rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+            line-height: 1.35;
+            display: block;
+        }
+
+        .card-row {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: fadeInUp 0.25s ease-out;
+        }
+
+        .sel-arrow {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.25rem;
+        }
+
+        /* Universal High-Contrast Light Theme Overrides */
+        html.light-theme body {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+
+        html.light-theme main,
+        html.light-theme .bg-slate-900\/80 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06) !important;
+            color: #0f172a !important;
+        }
+
+        html.light-theme .card-row {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        html.light-theme .inp {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        html.light-theme .inp:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        }
+
+        html.light-theme .inp::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        html.light-theme .lbl {
+            color: #334155 !important;
+        }
+
+        html.light-theme .hint {
+            color: #64748b !important;
+        }
+
+        html.light-theme .text-white {
+            color: #0f172a !important;
+        }
+
+        html.light-theme .text-slate-100,
+        html.light-theme .text-slate-200,
+        html.light-theme .text-slate-300 {
+            color: #1e293b !important;
+        }
+
+        html.light-theme .text-slate-400 {
+            color: #475569 !important;
+        }
+
+        html.light-theme .text-slate-500 {
+            color: #64748b !important;
+        }
+
+        html.light-theme .border-slate-800 {
+            border-color: #e2e8f0 !important;
+        }
+
+        html.light-theme .border-slate-700 {
+            border-color: #cbd5e1 !important;
+        }
+
+        html.light-theme .bg-slate-950\/50,
+        html.light-theme .bg-slate-950,
+        html.light-theme .bg-slate-800\/80,
+        html.light-theme .bg-slate-800\/60,
+        html.light-theme .bg-slate-800\/30,
+        html.light-theme .bg-slate-800 {
+            background-color: #f1f5f9 !important;
+            border-color: #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+
+        html.light-theme select.inp {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+
+        html.light-theme .leaflet-container {
+            background-color: #f1f5f9 !important;
+        }
+
+        html.light-theme #policy-preview-box {
+            background-color: #f0fdf4 !important;
+            border-color: #bbf7d0 !important;
+        }
+
+        html.light-theme #policy-preview-box .text-emerald-300 {
+            color: #15803d !important;
+        }
+
+        html.light-theme #policy-preview-box .text-slate-300 {
+            color: #166534 !important;
+        }
+
+        html.light-theme .purpose-banner {
+            background-color: #eff6ff !important;
+            border-color: #bfdbfe !important;
+        }
+
+        html.light-theme .purpose-banner .text-slate-300 {
+            color: #1e40af !important;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+
+<body class="bg-[#060a12] text-slate-100 font-sans min-h-screen py-8 px-4 sm:px-6 transition-colors duration-200">
+
+    <div class="max-w-3xl mx-auto space-y-6">
+
+        <!-- Header -->
+        <header class="text-center space-y-3 relative">
+            <div class="absolute right-0 top-0">
+                <button id="theme-toggle-btn"
+                    class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition flex items-center gap-1.5"
+                    title="Toggle Theme">
+                    <span class="theme-toggle-icon">&#9728;&#65039;</span>
+                </button>
+            </div>
+            <a href="/index.html" class="inline-flex items-center gap-2.5 text-white font-black text-xl tracking-tight">
+                <div
+                    class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <span>NEXA-GUARD</span>
+            </a>
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Institutional Hostel Setup</h1>
+            <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">Configure your residential campus
+                infrastructure, security checkpoints, and automated movement policies in 5 simple steps.</p>
+        </header>
+
+        <!-- Stepper Progress Bar -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl">
+            <div class="flex items-center justify-between mb-3">
+                <!-- Step 1 -->
+                <button id="step-tab-1" type="button" onclick="goToStep(1)"
+                    class="flex flex-col items-center gap-1 cursor-pointer">
+                    <span id="step-dot-1"
+                        class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-blue-500/30 transition-all duration-300">1</span>
+                    <span class="text-[10px] font-semibold text-blue-400 hidden sm:block">Identity</span>
+                </button>
+                <div class="flex-1 h-0.5 bg-slate-800 mx-1.5 rounded-full overflow-hidden">
+                    <div id="bar-1-2" class="h-full bg-gradient-to-r from-blue-500 to-blue-400 progress-fill"
+                        style="width:0%"></div>
+                </div>
+                <!-- Step 2 -->
+                <button id="step-tab-2" type="button" onclick="goToStep(2)"
+                    class="flex flex-col items-center gap-1 cursor-pointer">
+                    <span id="step-dot-2"
+                        class="w-7 h-7 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300">2</span>
+                    <span class="text-[10px] font-semibold text-slate-500 hidden sm:block">Location</span>
+                </button>
+                <div class="flex-1 h-0.5 bg-slate-800 mx-1.5 rounded-full overflow-hidden">
+                    <div id="bar-2-3" class="h-full bg-gradient-to-r from-blue-500 to-blue-400 progress-fill"
+                        style="width:0%"></div>
+                </div>
+                <!-- Step 3 -->
+                <button id="step-tab-3" type="button" onclick="goToStep(3)"
+                    class="flex flex-col items-center gap-1 cursor-pointer">
+                    <span id="step-dot-3"
+                        class="w-7 h-7 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300">3</span>
+                    <span class="text-[10px] font-semibold text-slate-500 hidden sm:block">Admin</span>
+                </button>
+                <div class="flex-1 h-0.5 bg-slate-800 mx-1.5 rounded-full overflow-hidden">
+                    <div id="bar-3-4" class="h-full bg-gradient-to-r from-blue-500 to-blue-400 progress-fill"
+                        style="width:0%"></div>
+                </div>
+                <!-- Step 4 -->
+                <button id="step-tab-4" type="button" onclick="goToStep(4)"
+                    class="flex flex-col items-center gap-1 cursor-pointer">
+                    <span id="step-dot-4"
+                        class="w-7 h-7 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300">4</span>
+                    <span class="text-[10px] font-semibold text-slate-500 hidden sm:block">Wings &amp; Gates</span>
+                </button>
+                <div class="flex-1 h-0.5 bg-slate-800 mx-1.5 rounded-full overflow-hidden">
+                    <div id="bar-4-5" class="h-full bg-gradient-to-r from-blue-500 to-blue-400 progress-fill"
+                        style="width:0%"></div>
+                </div>
+                <!-- Step 5 -->
+                <button id="step-tab-5" type="button" onclick="goToStep(5)"
+                    class="flex flex-col items-center gap-1 cursor-pointer">
+                    <span id="step-dot-5"
+                        class="w-7 h-7 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300">5</span>
+                    <span class="text-[10px] font-semibold text-slate-500 hidden sm:block">Policies</span>
+                </button>
+            </div>
+            <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div id="overall-progress"
+                    class="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 progress-fill rounded-full"
+                    style="width: 20%"></div>
+            </div>
+            <p id="step-counter-text" class="text-right text-[10px] text-slate-500 mt-1.5 font-medium">Step 1 of 5</p>
+        </div>
+
+        <!-- Main Wizard Card -->
+        <main class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+            <form id="wizard-form" onsubmit="handleWizardSubmit(event)" class="space-y-6" autocomplete="off">
+
+                <!-- ============================================================= -->
+                <!-- STEP 1: Institutional Identity -->
+                <!-- ============================================================= -->
+                <section id="step-1" class="step-section space-y-5">
+                    <div class="flex items-start justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-base font-bold text-white">Hostel &amp; Campus Profile</h2>
+                            </div>
+                            <p class="text-xs text-slate-400">Official institutional identity information.</p>
+                        </div>
+                        <span
+                            class="text-[10px] text-blue-400 bg-blue-950/60 px-2.5 py-1 rounded-lg border border-blue-800/50 font-bold flex-shrink-0">Step
+                            1 / 5</span>
+                    </div>
+
+                    <!-- Purpose Clarification Banner -->
+                    <div
+                        class="purpose-banner bg-blue-950/30 border border-blue-800/40 rounded-xl p-3.5 flex items-start gap-3 text-xs">
+                        <span class="text-base">💡</span>
+                        <div class="text-slate-300 leading-relaxed">
+                            <strong class="text-white block mb-0.5">Why are these details needed?</strong>
+                            These official records appear on student digital outpasses, guardian SMS/email
+                            notifications, and gate verification screens. Accurate contact information ensures emergency
+                            roll-call alerts reach the proper authorities.
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="lbl">Hostel Name *</label>
+                            <input type="text" id="hostel-name" required autocomplete="off"
+                                placeholder="e.g. NBH - A &amp; B Block" class="inp">
+                            <span class="hint">The specific residential hall or building name.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Institution / University *</label>
+                            <input type="text" id="institution-name" required autocomplete="off"
+                                placeholder="e.g. BBD University" class="inp">
+                            <span class="hint">Your college, institute, or university name.</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="lbl">Hostel Category *</label>
+                            <select id="hostel-type" required class="inp sel-arrow">
+                                <option value="" disabled selected>Select category</option>
+                                <option value="BOYS">Boys Hostel</option>
+                                <option value="GIRLS">Girls Hostel</option>
+                                <option value="CO-ED">Co-Educational</option>
+                            </select>
+                            <span class="hint">Applies gender-specific safety policies.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Official Phone *</label>
+                            <input type="tel" id="contact-phone" required autocomplete="off"
+                                placeholder="+91 9876543210" class="inp">
+                            <span class="hint">Main landline or warden contact line.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Official Email *</label>
+                            <input type="email" id="official-email" required autocomplete="off"
+                                placeholder="hostel@bbdu.ac.in" class="inp">
+                            <span class="hint">Receives emergency and audit reports.</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="lbl">Campus Address *</label>
+                            <input type="text" id="address" required autocomplete="off"
+                                placeholder="e.g. Faizabad Road, BBD City" class="inp">
+                            <span class="hint">Physical location on campus.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Pincode *</label>
+                            <input type="text" id="pincode" required autocomplete="off" placeholder="e.g. 226827"
+                                maxlength="6" class="inp font-mono">
+                            <span class="hint">6-digit postal code.</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="lbl">City *</label>
+                            <input type="text" id="city" required autocomplete="off"
+                                oninput="updateHostelIdPreview(this.value)" placeholder="e.g. Lucknow" class="inp">
+                        </div>
+                        <div>
+                            <label class="lbl">State *</label>
+                            <input type="text" id="state" required autocomplete="off" placeholder="e.g. Uttar Pradesh"
+                                class="inp">
+                        </div>
+                    </div>
+
+                    <!-- Hostel ID Preview Banner -->
+                    <div
+                        class="bg-gradient-to-r from-blue-950/40 to-indigo-950/40 border border-blue-800/30 rounded-xl p-3.5 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center flex-shrink-0">
+                                <span class="text-sm">🏷️</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">System
+                                    Identifier (Hostel Code)</span>
+                                <span id="preview-hostel-id"
+                                    class="text-sm font-mono font-black text-white">HST-LUC-001</span>
+                            </div>
+                        </div>
+                        <span class="text-[11px] text-slate-400 hidden sm:inline">Auto-assigned for QR tokens &amp; API
+                            routes</span>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="button" onclick="goToStep(2)"
+                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-blue-600/25 flex items-center gap-2">
+                            Next: Security Perimeter
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ============================================================= -->
+                <!-- STEP 2: Location & Geofence -->
+                <!-- ============================================================= -->
+                <section id="step-2" class="step-section space-y-5 hidden">
+                    <div class="flex items-start justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-base font-bold text-white">Security Perimeter &amp; Gate Geofence</h2>
+                            </div>
+                            <p class="text-xs text-slate-400">Defines the physical gate boundary for pass verification.
+                            </p>
+                        </div>
+                        <span
+                            class="text-[10px] text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-800/50 font-bold flex-shrink-0">Step
+                            2 / 5</span>
+                    </div>
+
+                    <!-- Purpose Clarification Banner -->
+                    <div
+                        class="purpose-banner bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-4 text-xs text-slate-200 leading-relaxed space-y-2">
+                        <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                            <span>📍</span>
+                            <span class="text-sm">Campus Gate Location (Krna Kya Hai?)</span>
+                        </div>
+                        <p class="text-slate-300">
+                            Aapko bas <strong>"Use Current GPS Location"</strong> button dabana hai, ya map par apne
+                            hostel ke <strong>Main Gate</strong> par click karna hai.
+                        </p>
+                        <p class="text-[11px] text-slate-400">
+                            <strong>Kyu zaroori hai:</strong> Jab student outpass scan karke bahar jayega ya aayega, toh
+                            system verify karega ki student physical gate boundary ke andar hai. Isse proxy ya fake
+                            check-in/out nahi ho sakti.
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+                        <span class="text-xs text-slate-300">Map par click karke gate pin set karein:</span>
+                        <button type="button" onclick="captureBrowserLocation()"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            📍 Use Current GPS Location
+                        </button>
+                    </div>
+
+                    <div id="map" class="border border-slate-700/60 shadow-inner rounded-xl"></div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="lbl">Gate Latitude *</label>
+                            <input type="number" step="any" id="latitude" required placeholder="e.g. 26.882690"
+                                onchange="updateMapFromInputs()" class="inp font-mono">
+                            <span class="hint">Map par click karne se auto-fill hota hai.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Gate Longitude *</label>
+                            <input type="number" step="any" id="longitude" required placeholder="e.g. 81.058360"
+                                onchange="updateMapFromInputs()" class="inp font-mono">
+                            <span class="hint">Map marker se auto-sync rehta hai.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Gate Verification Radius *</label>
+                            <input type="number" id="geofence-radius" required value="100" min="30" max="1000"
+                                oninput="updateGeofenceRadius()" class="inp font-mono">
+                            <div class="flex items-center gap-1.5 mt-1.5">
+                                <button type="button" onclick="setRadiusPreset(50)"
+                                    class="px-2 py-0.5 text-[10px] rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">50m</button>
+                                <button type="button" onclick="setRadiusPreset(100)"
+                                    class="px-2 py-0.5 text-[10px] rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold">100m
+                                    (Standard)</button>
+                                <button type="button" onclick="setRadiusPreset(200)"
+                                    class="px-2 py-0.5 text-[10px] rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">200m</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between pt-2">
+                        <button type="button" onclick="goToStep(1)"
+                            class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back
+                        </button>
+                        <button type="button" onclick="goToStep(3)"
+                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                            Next: Administrator Account
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ============================================================= -->
+                <!-- STEP 3: Admin Account -->
+                <!-- ============================================================= -->
+                <section id="step-3" class="step-section space-y-5 hidden">
+                    <div class="flex items-start justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-purple-600/20 border border-purple-500/30 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-base font-bold text-white">Chief Warden Administrator</h2>
+                            </div>
+                            <p class="text-xs text-slate-400">Master account for institutional control.</p>
+                        </div>
+                        <span
+                            class="text-[10px] text-purple-400 bg-purple-950/60 px-2.5 py-1 rounded-lg border border-purple-800/50 font-bold flex-shrink-0">Step
+                            3 / 5</span>
+                    </div>
+
+                    <!-- Purpose Clarification Banner -->
+                    <div
+                        class="purpose-banner bg-purple-950/30 border border-purple-800/40 rounded-xl p-3.5 flex items-start gap-3 text-xs">
+                        <span class="text-base">🔑</span>
+                        <div class="text-slate-300 leading-relaxed">
+                            <strong class="text-white block mb-0.5">What is this master administrator account?</strong>
+                            The Chief Warden has full authority to review leave outpasses, monitor live student
+                            headcounts, supervise floor wardens and security guards, and configure gate timing
+                            exceptions.
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="lbl">Administrator Full Name *</label>
+                            <input type="text" id="admin-name" required autocomplete="off"
+                                placeholder="e.g. Dr. R. K. Sharma" class="inp">
+                            <span class="hint">Appears on approved outpasses as the issuing authority.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Official Mobile *</label>
+                            <input type="tel" id="admin-phone" required autocomplete="off"
+                                placeholder="e.g. +91 9876543210" class="inp">
+                            <span class="hint">Used for urgent security escalation alerts.</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="lbl">Login Email Address *</label>
+                            <input type="email" id="admin-email" required autocomplete="off"
+                                placeholder="e.g. chiefwarden@bbdu.ac.in" class="inp">
+                            <span class="hint">Your username for institutional sign-in.</span>
+                        </div>
+                        <div>
+                            <label class="lbl">Master Password *</label>
+                            <div class="relative">
+                                <input type="password" id="admin-password" required autocomplete="new-password"
+                                    placeholder="Create a strong password" class="inp" style="padding-right:2.5rem">
+                                <button type="button" onclick="togglePwd('admin-password')"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition"
+                                    title="Show/Hide Password">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <span class="hint">Minimum 8 characters with letters &amp; numbers.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between pt-2">
+                        <button type="button" onclick="goToStep(2)"
+                            class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back
+                        </button>
+                        <button type="button" onclick="goToStep(4)"
+                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                            Next: Wings &amp; Gates
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ============================================================= -->
+                <!-- STEP 4: Wings & Gates -->
+                <!-- ============================================================= -->
+                <section id="step-4" class="step-section space-y-5 hidden">
+                    <div class="flex items-start justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-amber-600/20 border border-amber-500/30 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-base font-bold text-white">Residential Wings &amp; Access Gates (भवन एवं
+                                    गेट)</h2>
+                            </div>
+                            <p class="text-xs text-slate-400">Hostel buildings/blocks aur guard check-in gates define
+                                karein.</p>
+                        </div>
+                        <span
+                            class="text-[10px] text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded-lg border border-amber-800/50 font-bold flex-shrink-0">Step
+                            4 / 5</span>
+                    </div>
+
+                    <!-- Purpose Clarification Banner -->
+                    <div
+                        class="purpose-banner bg-amber-950/30 border border-amber-800/40 rounded-xl p-3.5 flex items-start gap-3 text-xs">
+                        <span class="text-base">🏢</span>
+                        <div class="text-slate-300 leading-relaxed">
+                            <strong class="text-white block mb-0.5">Krna Kya Hai?</strong>
+                            Apne hostel ki residential buildings (jaise <em>Block A, Boys Wing, Main Building</em>) aur
+                            gates (jaise <em>Main Campus Gate</em>) enter karein. Aap apni zaroorat ke mutabiq naam
+                            badal sakte hain ya naya wing add kar sakte hain.
+                        </div>
+                    </div>
+
+                    <!-- Section A: Residential Wings -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p
+                                    class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                    Residential Wings / Hostel Buildings
+                                </p>
+                                <span class="hint">Har floor par rooms auto-generate honge (e.g. A-101, A-102).</span>
+                            </div>
+                            <button type="button" onclick="addNewBlockRow()"
+                                class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                + Add Another Wing
+                            </button>
+                        </div>
+                        <div id="blocks-container" class="space-y-3"></div>
+                    </div>
+
+                    <!-- Section B: Gates -->
+                    <div class="border-t border-slate-800 pt-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p
+                                    class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                    Campus Access Gates (Checkpoints)
+                                </p>
+                                <span class="hint">Security gates jahan security guards student ka QR pass scan
+                                    karenge.</span>
+                            </div>
+                            <button type="button" onclick="addNewGateRow()"
+                                class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                + Add Another Gate
+                            </button>
+                        </div>
+                        <div id="gates-container" class="space-y-3"></div>
+                    </div>
+
+                    <div class="flex justify-between pt-2">
+                        <button type="button" onclick="goToStep(3)"
+                            class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back
+                        </button>
+                        <button type="button" onclick="goToStep(5)"
+                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-2">
+                            Next: Gate Timings &amp; Rules
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ============================================================= -->
+                <!-- STEP 5: Gate Timings & Leave Policies -->
+                <!-- ============================================================= -->
+                <section id="step-5" class="step-section space-y-5 hidden">
+                    <div class="flex items-start justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div
+                                    class="w-7 h-7 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h2 class="text-base font-bold text-white">Gate Timings &amp; Access Rules (गेट समय एवं
+                                    नियम)</h2>
+                            </div>
+                            <p class="text-xs text-slate-400">Hostel gate closing timings aur student leave rules set
+                                karein.</p>
+                        </div>
+                        <span
+                            class="text-[10px] text-indigo-400 bg-indigo-950/60 px-2.5 py-1 rounded-lg border border-indigo-800/50 font-bold flex-shrink-0">Step
+                            5 / 5</span>
+                    </div>
+
+                    <!-- Section A: Gate Timings -->
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                                Evening Gate Closing &amp; Safety Timings
+                            </p>
+                            <span class="hint">Standard institutional gate timings. Aap ise kabhi bhi Admin settings se
+                                badal sakte hain.</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="lbl">Boys Gate Closing * (बॉयज गेट समय)</label>
+                                <input type="time" id="boys-gate-closing" required value="21:30"
+                                    oninput="updatePolicyPreview()" class="inp font-mono">
+                                <span class="hint">Boys hostel evening gate entry deadline.</span>
+                            </div>
+                            <div>
+                                <label class="lbl">Girls Gate Closing * (गर्ल्स गेट समय)</label>
+                                <input type="time" id="girls-gate-closing" required value="20:30"
+                                    oninput="updatePolicyPreview()" class="inp font-mono">
+                                <span class="hint">Girls hostel evening gate entry deadline.</span>
+                            </div>
+                            <div>
+                                <label class="lbl">Grace Window (Minutes) * (देरी की छूट)</label>
+                                <input type="number" id="grace-minutes" required value="15" min="0" max="180"
+                                    oninput="updatePolicyPreview()" class="inp font-mono">
+                                <span class="hint">Buffer window allowed before late entry flag.</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="curfew-time" value="21:30">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-3.5 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <label class="lbl text-emerald-400 mb-0 font-bold">🏡 Home Pass &amp; Vacation
+                                        Leave</label>
+                                    <span
+                                        class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-800">Flexible
+                                        Leave</span>
+                                </div>
+                                <p class="text-xs text-slate-200 font-semibold mt-1">Koi Rigid Day Limit Nahi (Unlimited
+                                    Days)</p>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Ghar jane ke liye student kisi bhi zaroorat ke anusaar leave apply kar sakta hai
+                                    (e.g. 3 din, 15 din, tyohar, ya chhuttiyan). Pass <strong>Parent aur Warden ke
+                                        approval</strong> ke baad valid hota hai.
+                                </p>
+                                <input type="hidden" id="homepass-days" value="30">
+                            </div>
+                            <div class="p-3.5 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
+                                <div class="flex items-center justify-between">
+                                    <label class="lbl text-indigo-400 mb-0 font-bold">📚 Academic Protection &amp; Pass
+                                        Cut</label>
+                                    <span
+                                        class="text-[10px] px-2 py-0.5 rounded bg-indigo-950 text-indigo-400 font-bold border border-indigo-800">No
+                                        Bunking</span>
+                                </div>
+                                <p class="text-xs text-slate-200 font-semibold mt-1">College Time Pe Pass Cut Nahi Hogi
+                                </p>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Academic hours (09:00 AM - 04:30 PM) me casual outpasses blocked hain. Weekday
+                                    evening pass window: <strong>04:30 PM - 06:30 PM</strong>. Holiday morning
+                                    (07:00-11:00 AM) &amp; evening (04:00-07:00 PM) windows uplabdh hain. Emergency 24/7
+                                    allowed.
+                                </p>
+                                <input type="hidden" id="fine-rate" value="0">
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Real-Time Policy Explainer Preview Box -->
+                        <div id="policy-preview-box"
+                            class="bg-gradient-to-r from-indigo-950/40 to-slate-900/60 border border-indigo-500/30 rounded-2xl p-4 space-y-2">
+                            <div class="flex items-center gap-2 text-indigo-400 font-bold text-xs">
+                                <span>💡</span>
+                                <span>Live System Execution Preview (NEXA-GUARD Kaise Execute Karega):</span>
+                            </div>
+                            <ul class="text-xs text-slate-300 space-y-1.5 leading-relaxed font-sans">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 font-bold">•</span>
+                                    <span><strong>Gate Closing Deadline:</strong> Boys campus: <span id="prev-boys-gate"
+                                            class="font-bold text-white font-mono">09:30 PM</span> | Girls campus: <span
+                                            id="prev-girls-gate" class="font-bold text-white font-mono">08:30 PM</span>
+                                        tak enter hona anivarya hai.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 font-bold">•</span>
+                                    <span><strong>Grace Buffer:</strong> <span id="prev-grace-time"
+                                            class="font-bold text-emerald-400 font-mono">15 Minutes</span> buffer tak
+                                        gate entry bina kisi late record ke authorize hogi.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 font-bold">•</span>
+                                    <span><strong>Academic Protection:</strong> Mon-Sat 09:00 AM se 04:30 PM ke dauran
+                                        regular outpasses cut nahi honge taaki class bunking na ho.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 font-bold">•</span>
+                                    <span><strong>Home Pass Policy:</strong> Din ki koi limit nahi hai — Parent
+                                        verification aur Warden approval ke baad student ghar ja sakta hai.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 font-bold">•</span>
+                                    <span><strong>Late Fine:</strong> <span id="prev-fine-text"
+                                            class="font-bold text-white font-mono">₹0 (No fine)</span> — koi monetary
+                                        penalty charge nahi hogi.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Section B: Resident Enrollment -->
+                    <div class="border-t border-slate-800 pt-5 space-y-3">
+                        <div>
+                            <p class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                                Resident Student Enrollment (Optional)
+                            </p>
+                            <span class="hint">Choose how to enroll your student residents:</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button type="button" id="mode-card-skip" onclick="selectStudentMode('skip')"
+                                class="p-3.5 bg-slate-800/80 border-2 border-emerald-500 rounded-xl text-xs cursor-pointer transition text-left space-y-1">
+                                <span class="block font-bold text-white text-xs">&#9889; Skip for Now</span>
+                                <span class="text-[11px] text-slate-400 block leading-normal font-normal">Activate setup
+                                    now and bulk-import students later via Excel / CSV.</span>
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 text-[10px] font-bold mt-1">Recommended</span>
+                            </button>
+                            <button type="button" id="mode-card-manual" onclick="selectStudentMode('manual')"
+                                class="p-3.5 bg-slate-800/60 border border-slate-700 hover:border-slate-500 rounded-xl text-xs cursor-pointer transition text-left space-y-1">
+                                <span class="block font-bold text-white text-xs">&#9997;&#65039; Manual Entry</span>
+                                <span class="text-[11px] text-slate-400 block leading-normal font-normal">Add initial
+                                    resident students one by one through a simple form.</span>
+                            </button>
+                            <button type="button" id="mode-card-csv" onclick="selectStudentMode('csv')"
+                                class="p-3.5 bg-slate-800/60 border border-slate-700 hover:border-slate-500 rounded-xl text-xs cursor-pointer transition text-left space-y-1">
+                                <span class="block font-bold text-white text-xs">&#128193; Paste CSV Roster</span>
+                                <span class="text-[11px] text-slate-400 block leading-normal font-normal">Paste an
+                                    existing student spreadsheet exported from college ERP.</span>
+                            </button>
+                        </div>
+
+                        <!-- Skip View -->
+                        <div id="students-skip-view"
+                            class="bg-emerald-950/20 border border-emerald-800/30 rounded-2xl p-4 text-center space-y-1.5">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center font-bold">
+                                ✓</div>
+                            <p class="text-xs font-bold text-white">Clean Start &mdash; Zero Pre-loaded Residents</p>
+                            <p class="text-[11px] text-slate-400 max-w-md mx-auto">You can onboard resident students
+                                individually, bulk-import from CSV, or send student invite links anytime from the
+                                Administrator Command Center.</p>
+                        </div>
+
+                        <!-- Manual View -->
+                        <div id="students-manual-view" class="space-y-3 hidden">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-400">Add resident students:</span>
+                                <button type="button" onclick="addNewStudentRow()"
+                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    + Add Student
+                                </button>
+                            </div>
+                            <div id="manual-students-container" class="space-y-2.5"></div>
+                        </div>
+
+                        <!-- CSV View -->
+                        <div id="students-csv-view" class="hidden space-y-2">
+                            <div class="flex items-center justify-between text-xs text-slate-400">
+                                <span>Expected Header: <code
+                                        class="text-blue-400 font-mono">full_name, roll_number, email, phone, course, branch, year</code></span>
+                                <button type="button" onclick="insertCsvHeader()"
+                                    class="text-blue-400 hover:text-blue-300 underline font-semibold">Insert
+                                    Header</button>
+                            </div>
+                            <textarea id="students-csv" rows="5"
+                                placeholder="Paste student spreadsheet rows below this header..." class="inp font-mono"
+                                style="resize:none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="border-t border-slate-800 pt-5 flex justify-between items-center">
+                        <button type="button" onclick="goToStep(4)"
+                            class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back
+                        </button>
+                        <button type="submit" id="submit-btn"
+                            class="px-8 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white rounded-xl text-xs font-extrabold shadow-xl shadow-blue-600/25 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            Activate Hostel Command Center
+                        </button>
+                    </div>
+                </section>
+
+            </form>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/js/api.js"></script>
+    <script>
+        var currentStep = 1;
+        var map = null, marker = null, circle = null;
+        var blocks = [
+            { name: '', code: '', floors: 3, description: 'Standard Residential Wing' }
+        ];
+        var gates = [
+            { name: '', code: '', type: 'MAIN' }
+        ];
+        var manualStudents = [];
+        var studentMode = 'skip';
+
+        function togglePwd(id) {
+            var inp = document.getElementById(id);
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+
+        function updateHostelIdPreview(cityName) {
+            var clean = (cityName || '').trim().toUpperCase().replace(/[^A-Z]/g, '');
+            var prefix = clean.length >= 3 ? clean.substring(0, 3) : (clean + 'XXX').substring(0, 3);
+            var code = 'HST-' + prefix + '-001';
+            var el1 = document.getElementById('preview-hostel-id');
+            if (el1) el1.textContent = code;
+        }
+
+        function updateProgressUI(step) {
+            var pct = Math.round(((step - 1) / 4) * 100);
+            document.getElementById('overall-progress').style.width = Math.max(pct, 20) + '%';
+            document.getElementById('step-counter-text').textContent = 'Step ' + step + ' of 5';
+            for (var i = 1; i <= 5; i++) {
+                var dot = document.getElementById('step-dot-' + i);
+                var tab = document.getElementById('step-tab-' + i);
+                var labels = tab ? tab.querySelectorAll('span') : [];
+                var labelEl = labels.length > 1 ? labels[labels.length - 1] : null;
+                var bar = document.getElementById('bar-' + i + '-' + (i + 1));
+                if (i < step) {
+                    dot.className = 'w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-emerald-500/30 transition-all duration-300';
+                    dot.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+                    if (labelEl) labelEl.className = 'text-[10px] font-semibold text-emerald-400 hidden sm:block';
+                    if (bar) bar.style.width = '100%';
+                } else if (i === step) {
+                    dot.className = 'w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-blue-500/30 transition-all duration-300';
+                    dot.textContent = i;
+                    if (labelEl) labelEl.className = 'text-[10px] font-semibold text-blue-400 hidden sm:block';
+                } else {
+                    dot.className = 'w-7 h-7 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold transition-all duration-300';
+                    dot.textContent = i;
+                    if (labelEl) labelEl.className = 'text-[10px] font-semibold text-slate-500 hidden sm:block';
+                    if (bar) bar.style.width = '0%';
+                }
+            }
+        }
+
+        function goToStep(step) {
+            if (step > currentStep) {
+                if (currentStep === 1) {
+                    var f = ['hostel-name', 'institution-name', 'contact-phone', 'official-email', 'address', 'city', 'state', 'pincode'];
+                    var allOk = f.every(function (id) { return document.getElementById(id).value.trim(); });
+                    if (!allOk || !document.getElementById('hostel-type').value) {
+                        return API.toast('Please complete all institutional profile details in Step 1.', 'warning');
+                    }
+                }
+                if (currentStep === 2) {
+                    var lat = parseFloat(document.getElementById('latitude').value);
+                    var lng = parseFloat(document.getElementById('longitude').value);
+                    var rad = parseInt(document.getElementById('geofence-radius').value);
+                    if (isNaN(lat) || isNaN(lng) || isNaN(rad) || rad < 30) {
+                        return API.toast('Please place the gate marker on the map and set checkpoint radius (min 30m).', 'warning');
+                    }
+                }
+                if (currentStep === 3) {
+                    var f3 = ['admin-name', 'admin-phone', 'admin-email'];
+                    var ok3 = f3.every(function (id) { return document.getElementById(id).value.trim(); });
+                    if (!ok3 || !document.getElementById('admin-password').value) {
+                        return API.toast('Please complete all administrator credentials in Step 3.', 'warning');
+                    }
+                }
+                if (currentStep === 4) {
+                    if (blocks.length === 0) return API.toast('Please configure at least one residential wing in Step 4.', 'warning');
+                    for (var i = 0; i < blocks.length; i++) {
+                        if (!blocks[i].name || !blocks[i].code || !blocks[i].floors) {
+                            return API.toast('Please complete wing name, code, and floors for Wing #' + (i + 1) + '.', 'warning');
+                        }
+                    }
+                    if (gates.length === 0) return API.toast('Please configure at least one access gate in Step 4.', 'warning');
+                    for (var j = 0; j < gates.length; j++) {
+                        if (!gates[j].name || !gates[j].code || !gates[j].type) {
+                            return API.toast('Please complete name, code, and type for Gate #' + (j + 1) + '.', 'warning');
+                        }
+                    }
+                }
+            }
+            if (step === 2) setTimeout(initMap, 200);
+            if (step === 5) updatePolicyPreview();
+
+            for (var s = 1; s <= 5; s++) {
+                var sec = document.getElementById('step-' + s);
+                if (sec) sec.classList.toggle('hidden', s !== step);
+            }
+            currentStep = step;
+            updateProgressUI(step);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setRadiusPreset(meters) {
+            document.getElementById('geofence-radius').value = meters;
+            updateGeofenceRadius();
+            API.toast('Verification radius set to ' + meters + 'm.', 'info');
+        }
+        function onBlockNameChange(idx, val) {
+            blocks[idx].name = val;
+            if (!blocks[idx].code && val) {
+                var suggested = val.replace(/[^a-zA-Z0-9]/g, '').substring(0, 5).toUpperCase();
+                if (suggested) {
+                    blocks[idx].code = suggested;
+                    var codeInp = document.getElementById('block-code-' + idx);
+                    if (codeInp) codeInp.value = suggested;
+                }
+            }
+        }
+
+        function renderBlocks() {
+            var c = document.getElementById('blocks-container');
+            if (!blocks.length) {
+                c.innerHTML = '<div class="p-6 bg-slate-900/40 border-2 border-dashed border-slate-700/60 rounded-xl text-center space-y-2">' +
+                    '<p class="text-xs text-slate-300 font-semibold">Abhi koi building ya wing add nahi hai.</p>' +
+                    '<p class="text-[11px] text-slate-400">Apne hostel ki building (jaise Block A, Boys Wing) add karne ke liye niche button dabayein:</p>' +
+                    '<button type="button" onclick="addNewBlockRow()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition shadow-md">+ Add Residential Wing</button>' +
+                    '</div>';
+                return;
+            }
+            c.innerHTML = blocks.map(function (b, idx) {
+                var totalRooms = (parseInt(b.floors) || 1) * 8;
+                return '<div class="card-row flex-col sm:flex-row gap-3">' +
+                    '<div class="grid grid-cols-1 sm:grid-cols-4 gap-3 flex-1 w-full">' +
+                    '<div>' +
+                    '<label class="lbl">Wing / Block Name *</label>' +
+                    '<input type="text" value="' + (b.name || '') + '" oninput="onBlockNameChange(' + idx + ', this.value)" placeholder="e.g. Block A, Girls Wing, NBH" class="inp text-xs">' +
+                    '<span class="hint">Building ka physical naam.</span>' +
+                    '</div>' +
+                    '<div>' +
+                    '<label class="lbl">Code *</label>' +
+                    '<input type="text" id="block-code-' + idx + '" value="' + (b.code || '') + '" oninput="blocks[' + idx + '].code=this.value.toUpperCase()" placeholder="e.g. BLK-A or A" class="inp font-mono text-xs uppercase">' +
+                    '<span class="hint">Room prefix (e.g. A-101).</span>' +
+                    '</div>' +
+                    '<div>' +
+                    '<label class="lbl">Total Floors *</label>' +
+                    '<input type="number" value="' + (b.floors || '') + '" min="1" max="25" oninput="blocks[' + idx + '].floors=this.value;renderBlocksSummary(' + idx + ')" placeholder="e.g. 3" class="inp font-mono text-xs">' +
+                    '<span class="hint" id="block-hint-' + idx + '">' + totalRooms + ' rooms will be created.</span>' +
+                    '</div>' +
+                    '<div>' +
+                    '<label class="lbl">Wing Type / Purpose</label>' +
+                    '<select onchange="blocks[' + idx + '].description=this.value" class="inp sel-arrow text-xs">' +
+                    '<option value="Standard Residential Wing" ' + ((b.description || '').includes('Standard') ? 'selected' : '') + '>Standard Residential Wing</option>' +
+                    '<option value="First-Year Residents" ' + ((b.description || '').includes('First') ? 'selected' : '') + '>First-Year Residents</option>' +
+                    '<option value="Senior Students" ' + ((b.description || '').includes('Senior') ? 'selected' : '') + '>Senior Students</option>' +
+                    '<option value="Postgraduate / Research" ' + ((b.description || '').includes('Post') ? 'selected' : '') + '>Postgraduate / Research</option>' +
+                    '</select>' +
+                    '<span class="hint">Category.</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '<button type="button" onclick="removeBlock(' + idx + ')" class="self-end sm:self-center p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-red-400 transition" title="Remove Wing">' +
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+                    '</button>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function renderBlocksSummary(idx) {
+            var el = document.getElementById('block-hint-' + idx);
+            if (el && blocks[idx]) {
+                var f = parseInt(blocks[idx].floors) || 1;
+                el.textContent = (f * 8) + ' rooms will be created.';
+            }
+        }
+
+        function addNewBlockRow() {
+            blocks.push({
+                name: '',
+                code: '',
+                floors: 3,
+                description: 'Standard Residential Wing'
+            });
+            renderBlocks();
+        }
+        function removeBlock(idx) {
+            blocks.splice(idx, 1);
+            renderBlocks();
+        }
+
+        function renderGates() {
+            var c = document.getElementById('gates-container');
+            if (!gates.length) {
+                c.innerHTML = '<div class="p-6 bg-slate-900/40 border-2 border-dashed border-slate-700/60 rounded-xl text-center space-y-2">' +
+                    '<p class="text-xs text-slate-300 font-semibold">Abhi koi gate add nahi hai.</p>' +
+                    '<p class="text-[11px] text-slate-400">Apne campus ka entry/exit gate add karne ke liye niche click karein:</p>' +
+                    '<button type="button" onclick="addNewGateRow()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-md">+ Add Campus Gate</button>' +
+                    '</div>';
+                return;
+            }
+            c.innerHTML = gates.map(function (g, idx) {
+                return '<div class="card-row flex-col sm:flex-row gap-3">' +
+                    '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1 w-full">' +
+                    '<div>' +
+                    '<label class="lbl">Gate Name *</label>' +
+                    '<input type="text" value="' + (g.name || '') + '" oninput="gates[' + idx + '].name=this.value" placeholder="e.g. Main Campus Gate, North Gate" class="inp text-xs">' +
+                    '<span class="hint">Physical gate ka naam.</span>' +
+                    '</div>' +
+                    '<div>' +
+                    '<label class="lbl">Gate Code *</label>' +
+                    '<input type="text" value="' + (g.code || '') + '" oninput="gates[' + idx + '].code=this.value.toUpperCase()" placeholder="e.g. GATE-01" class="inp font-mono text-xs uppercase">' +
+                    '<span class="hint">Unique identifier code.</span>' +
+                    '</div>' +
+                    '<div>' +
+                    '<label class="lbl">Gate Type / Transit Role *</label>' +
+                    '<select onchange="gates[' + idx + '].type=this.value" class="inp sel-arrow text-xs">' +
+                    '<option value="MAIN" ' + (g.type === 'MAIN' ? 'selected' : '') + '>Main Entrance (Entry &amp; Exit)</option>' +
+                    '<option value="PEDESTRIAN" ' + (g.type === 'PEDESTRIAN' ? 'selected' : '') + '>Pedestrian Turnstile Only</option>' +
+                    '<option value="EMERGENCY" ' + (g.type === 'EMERGENCY' ? 'selected' : '') + '>Night Emergency / Service Gate</option>' +
+                    '</select>' +
+                    '<span class="hint">Allowed movement classification.</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '<button type="button" onclick="removeGate(' + idx + ')" class="self-end sm:self-center p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-red-400 transition" title="Remove Gate">' +
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+                    '</button>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function addNewGateRow() {
+            gates.push({
+                name: '',
+                code: '',
+                type: 'MAIN'
+            });
+            renderGates();
+        }
+        function removeGate(idx) {
+            gates.splice(idx, 1);
+            renderGates();
+        }
+
+        function updatePolicyPreview() {
+            var boysVal = document.getElementById('boys-gate-closing') ? document.getElementById('boys-gate-closing').value : '21:30';
+            var girlsVal = document.getElementById('girls-gate-closing') ? document.getElementById('girls-gate-closing').value : '20:30';
+            var graceVal = parseInt(document.getElementById('grace-minutes').value) || 15;
+
+            function formatTime12(timeStr) {
+                var parts = (timeStr || '21:30').split(':');
+                var h = parseInt(parts[0]) || 21;
+                var m = parseInt(parts[1]) || 0;
+                var ampm = h >= 12 ? 'PM' : 'AM';
+                var h12 = h % 12 || 12;
+                var mStr = m < 10 ? '0' + m : m;
+                return (h12 < 10 ? '0' + h12 : h12) + ':' + mStr + ' ' + ampm;
+            }
+
+            var elB = document.getElementById('prev-boys-gate');
+            var elG = document.getElementById('prev-girls-gate');
+            var elGrace = document.getElementById('prev-grace-time');
+
+            if (elB) elB.textContent = formatTime12(boysVal);
+            if (elG) elG.textContent = formatTime12(girlsVal);
+            if (elGrace) elGrace.textContent = graceVal + ' Minutes';
+            if (document.getElementById('curfew-time')) {
+                document.getElementById('curfew-time').value = boysVal;
+            }
+        }
+
+        function renderManualStudents() {
+            var c = document.getElementById('manual-students-container');
+            if (!manualStudents.length) { c.innerHTML = '<p class="text-xs text-slate-500 py-2">No residents added yet. Click "+ Add Student" above.</p>'; return; }
+            c.innerHTML = manualStudents.map(function (s, idx) {
+                return '<div class="card-row flex-col sm:flex-row gap-3"><div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 flex-1 w-full">' +
+                    '<div><label class="lbl">Full Name *</label><input type="text" value="' + (s.fullName || '') + '" oninput="manualStudents[' + idx + '].fullName=this.value" placeholder="Full name" class="inp text-xs"></div>' +
+                    '<div><label class="lbl">Roll No *</label><input type="text" value="' + (s.rollNumber || '') + '" oninput="manualStudents[' + idx + '].rollNumber=this.value" placeholder="Roll number" class="inp font-mono text-xs"></div>' +
+                    '<div><label class="lbl">Email *</label><input type="email" value="' + (s.email || '') + '" oninput="manualStudents[' + idx + '].email=this.value" placeholder="Email" class="inp text-xs"></div>' +
+                    '<div><label class="lbl">Phone *</label><input type="tel" value="' + (s.phone || '') + '" oninput="manualStudents[' + idx + '].phone=this.value" placeholder="Mobile" class="inp text-xs"></div>' +
+                    '<div><label class="lbl">Course *</label><input type="text" value="' + (s.course || '') + '" oninput="manualStudents[' + idx + '].course=this.value" placeholder="e.g. B.Tech" class="inp text-xs"></div>' +
+                    '<div><label class="lbl">Branch *</label><input type="text" value="' + (s.branch || '') + '" oninput="manualStudents[' + idx + '].branch=this.value" placeholder="e.g. CSE" class="inp text-xs"></div>' +
+                    '<div><label class="lbl">Year *</label><input type="number" min="1" max="5" value="' + (s.year || '') + '" oninput="manualStudents[' + idx + '].year=this.value" placeholder="1-5" class="inp text-xs"></div>' +
+                    '</div>' +
+                    '<button type="button" onclick="removeStudent(' + idx + ')" class="self-end sm:self-center p-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-red-400 transition" title="Remove Student">' +
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+                    '</button></div>';
+            }).join('');
+        }
+        function addNewStudentRow() { manualStudents.push({ fullName: '', rollNumber: '', email: '', phone: '', course: 'B.Tech', branch: 'CSE', year: 1 }); renderManualStudents(); }
+        function removeStudent(idx) { manualStudents.splice(idx, 1); renderManualStudents(); }
+
+        function selectStudentMode(mode) {
+            studentMode = mode;
+            var modes = ['skip', 'manual', 'csv'];
+            var colors = { skip: 'emerald', manual: 'blue', csv: 'purple' };
+            modes.forEach(function (m) {
+                var card = document.getElementById('mode-card-' + m);
+                var view = document.getElementById('students-' + m + '-view');
+                if (card) {
+                    card.className = m === mode
+                        ? 'p-3.5 bg-slate-800/80 border-2 border-' + colors[m] + '-500 rounded-xl text-xs cursor-pointer transition text-left space-y-1'
+                        : 'p-3.5 bg-slate-800/60 border border-slate-700 hover:border-slate-500 rounded-xl text-xs cursor-pointer transition text-left space-y-1';
+                }
+                if (view) view.classList.toggle('hidden', m !== mode);
+            });
+            if (mode === 'manual' && manualStudents.length === 0) addNewStudentRow();
+        }
+
+        function insertCsvHeader() {
+            var area = document.getElementById('students-csv');
+            if (!area.value.trim()) area.value = 'full_name, roll_number, email, phone, course, branch, year\n';
+            area.focus();
+        }
+
+        function setMapCoordinates(lat, lng) {
+            document.getElementById('latitude').value = parseFloat(lat).toFixed(6);
+            document.getElementById('longitude').value = parseFloat(lng).toFixed(6);
+            var ri = document.getElementById('geofence-radius').value;
+            var radius = ri && !isNaN(parseInt(ri)) ? parseInt(ri) : 100;
+            var pos = L.latLng(lat, lng);
+            if (!marker) {
+                marker = L.marker(pos, { draggable: true }).addTo(map);
+                marker.on('dragend', function (e) { var p = e.target.getLatLng(); setMapCoordinates(p.lat, p.lng); });
+            } else { marker.setLatLng(pos); }
+            if (!circle) {
+                circle = L.circle(pos, { radius: radius, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.12, weight: 2 }).addTo(map);
+            } else { circle.setLatLng(pos).setRadius(radius); }
+            map.panTo(pos);
+        }
+
+        function initMap() {
+            var latVal = document.getElementById('latitude').value;
+            var lngVal = document.getElementById('longitude').value;
+            var hasCoords = latVal && lngVal && !isNaN(parseFloat(latVal)) && !isNaN(parseFloat(lngVal));
+            var lat = hasCoords ? parseFloat(latVal) : 26.882690;
+            var lng = hasCoords ? parseFloat(lngVal) : 81.058360;
+            var zoom = hasCoords ? 16 : 14;
+            if (!map) {
+                map = L.map('map').setView([lat, lng], zoom);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+                setMapCoordinates(lat, lng);
+                map.on('click', function (e) { setMapCoordinates(e.latlng.lat, e.latlng.lng); });
+            } else { map.invalidateSize(); }
+        }
+
+        function updateMapFromInputs() {
+            var lat = parseFloat(document.getElementById('latitude').value);
+            var lng = parseFloat(document.getElementById('longitude').value);
+            if (!isNaN(lat) && !isNaN(lng)) setMapCoordinates(lat, lng);
+        }
+
+        function updateGeofenceRadius() {
+            var r = parseInt(document.getElementById('geofence-radius').value);
+            if (!isNaN(r) && circle) circle.setRadius(r);
+        }
+
+        function captureBrowserLocation() {
+            if (!navigator.geolocation) return API.toast('Geolocation not supported by your browser.', 'warning');
+            navigator.geolocation.getCurrentPosition(
+                function (pos) { setMapCoordinates(pos.coords.latitude, pos.coords.longitude); if (map) map.setView([pos.coords.latitude, pos.coords.longitude], 17); API.toast('Location detected and pinned successfully.', 'success'); },
+                function () { API.toast('Could not access GPS. Click on the map to set gate location.', 'warning'); },
+                { enableHighAccuracy: true, timeout: 6000 }
+            );
+        }
+
+        async function handleWizardSubmit(e) {
+            e.preventDefault();
+            var btn = document.getElementById('submit-btn');
+            var hostelName = document.getElementById('hostel-name').value.trim();
+            var institutionName = document.getElementById('institution-name').value.trim();
+            var hostelType = document.getElementById('hostel-type').value;
+            var contactPhone = document.getElementById('contact-phone').value.trim();
+            var officialEmail = document.getElementById('official-email').value.trim();
+            var address = document.getElementById('address').value.trim();
+            var city = document.getElementById('city').value.trim();
+            var state = document.getElementById('state').value.trim();
+            var pincode = document.getElementById('pincode').value.trim();
+            if (!hostelName || !institutionName || !hostelType || !contactPhone || !officialEmail || !address || !city || !state || !pincode) { goToStep(1); return API.toast('Please complete all institutional details in Step 1.', 'error'); }
+
+            var lat = parseFloat(document.getElementById('latitude').value);
+            var lng = parseFloat(document.getElementById('longitude').value);
+            var geofenceRadiusMeters = parseInt(document.getElementById('geofence-radius').value);
+            if (isNaN(lat) || isNaN(lng) || isNaN(geofenceRadiusMeters)) { goToStep(2); return API.toast('Please set gate coordinates and checkpoint radius in Step 2.', 'error'); }
+
+            var adminFullName = document.getElementById('admin-name').value.trim();
+            var adminPhone = document.getElementById('admin-phone').value.trim();
+            var adminEmail = document.getElementById('admin-email').value.trim();
+            var adminPassword = document.getElementById('admin-password').value;
+            if (!adminFullName || !adminPhone || !adminEmail || !adminPassword) { goToStep(3); return API.toast('Please complete administrator credentials in Step 3.', 'error'); }
+
+            var cleanBlocks = blocks.filter(function (b) { return b.name && b.name.trim() && b.code && b.code.trim() && b.floors; }).map(function (b) { return { name: b.name.trim(), code: b.code.trim().toUpperCase(), description: (b.description || 'Standard Residential Wing').trim(), floors: parseInt(b.floors) || 1 }; });
+            if (!cleanBlocks.length) { goToStep(4); return API.toast('Please configure at least one residential wing in Step 4.', 'error'); }
+
+            var cleanGates = gates.filter(function (g) { return g.name && g.name.trim() && g.code && g.code.trim() && g.type; }).map(function (g) { return { name: g.name.trim(), code: g.code.trim().toUpperCase(), type: g.type }; });
+            if (!cleanGates.length) { goToStep(4); return API.toast('Please configure at least one access gate in Step 4.', 'error'); }
+
+            var boysGateClosing = document.getElementById('boys-gate-closing') ? document.getElementById('boys-gate-closing').value : '21:30';
+            var girlsGateClosing = document.getElementById('girls-gate-closing') ? document.getElementById('girls-gate-closing').value : '20:30';
+            var curfewTime = hostelType === 'GIRLS' ? girlsGateClosing : boysGateClosing;
+            var graceMinutes = parseInt(document.getElementById('grace-minutes').value);
+            if (isNaN(graceMinutes)) graceMinutes = 15;
+            var homepassDays = 30;
+            var fineRate = 0;
+
+            var finalStudents = [];
+            if (studentMode === 'manual') {
+                for (var i = 0; i < manualStudents.length; i++) {
+                    var s = manualStudents[i];
+                    if (s.fullName || s.rollNumber || s.email) {
+                        if (!s.fullName || !s.rollNumber || !s.email || !s.phone || !s.course || !s.branch || !s.year) { return API.toast('Please complete all fields for Resident #' + (i + 1) + ' or remove the row.', 'error'); }
+                        finalStudents.push({ fullName: s.fullName.trim(), rollNumber: s.rollNumber.trim(), email: s.email.trim(), phone: s.phone.trim(), course: s.course.trim(), branch: s.branch.trim(), year: parseInt(s.year) || 1 });
+                    }
+                }
+            } else if (studentMode === 'csv') {
+                var csvText = document.getElementById('students-csv').value.trim();
+                if (csvText) {
+                    var lines = csvText.split('\n');
+                    if (lines.length > 1) {
+                        var headers = lines[0].split(',').map(function (h) { return h.trim().toLowerCase(); });
+                        for (var j = 1; j < lines.length; j++) {
+                            var row = lines[j].split(',').map(function (c) { return c.trim(); });
+                            if (row.length >= 2 && row[0]) {
+                                var sObj = {};
+                                headers.forEach(function (h, idx) { sObj[h] = row[idx]; });
+                                finalStudents.push({ fullName: sObj.full_name || sObj.name, rollNumber: sObj.roll_number || sObj.roll, email: sObj.email, phone: sObj.phone, course: sObj.course || 'B.Tech', branch: sObj.branch || 'General', year: parseInt(sObj.year) || 1 });
+                            }
+                        }
+                    }
+                }
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Provisioning infrastructure...';
+
+            var defaultZones = [
+                { name: 'Hostel Residential Perimeter', code: 'ZN-RES', riskLevel: 'LOW' },
+                { name: 'Academic & Library Complex', code: 'ZN-ACAD', riskLevel: 'LOW' },
+                { name: 'Commercial & Dining Market', code: 'ZN-COMM', riskLevel: 'MEDIUM' }
+            ];
+
+            var payload = { hostelName, institutionName, hostelType, contactPhone, officialEmail, address, city, state, pincode, latitude: lat, longitude: lng, geofenceRadiusMeters, adminFullName, adminPhone, adminEmail, adminPassword, blocks: cleanBlocks, gates: cleanGates, zones: defaultZones, curfewTime, boysGateClosing, girlsGateClosing, graceMinutes, homepassDays, fineRate, students: finalStudents };
+
+            try {
+                var res = await API.setupHostelWizard(payload);
+                if (res.token && res.user) {
+                    API.setToken(res.token); API.setUser(res.user);
+                    API.toast('Hostel registered successfully! Code: ' + res.hostelId, 'success');
+                    setTimeout(function () { window.location.href = res.redirectUrl || '/admin.html'; }, 1200);
+                } else {
+                    API.toast(res.message || 'Setup complete! Redirecting to sign in...', 'success');
+                    setTimeout(function () { window.location.href = '/login.html'; }, 1500);
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> Activate Hostel Command Center';
+                API.toast('Setup failed: ' + (err.message || 'Server error'), 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            renderBlocks();
+            renderGates();
+            selectStudentMode('skip');
+            updateProgressUI(1);
+            updatePolicyPreview();
+        });
+    </script>
+    <script src="/js/theme.js"></script>
+</body>
+
+</html>

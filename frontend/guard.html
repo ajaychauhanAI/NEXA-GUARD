@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gate Security Terminal — NEXA-GUARD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body class="bg-[#090d16] text-slate-100 font-sans min-h-screen selection:bg-blue-600 selection:text-white pb-16 transition-colors duration-200">
+
+    <!-- Top Navigation -->
+    <nav class="bg-slate-900/80 border-b border-slate-800 sticky top-0 z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold shadow-md shadow-emerald-500/20">
+                        🚪
+                    </div>
+                    <span class="font-extrabold text-lg tracking-tight text-white">NEXA-GUARD</span>
+                </a>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">
+                    Gate Security Terminal
+                </span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Gate Station Selector -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-400 hidden sm:inline">Active Gate:</span>
+                    <select id="gate-selector" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 font-semibold">
+                        <option value="1">Gate 1: Main Campus Gate</option>
+                        <option value="2">Gate 2: North Academic Gate</option>
+                        <option value="3">Gate 3: Rear Sports Gate</option>
+                        <option value="4">Gate 4: Emergency Medical Gate</option>
+                    </select>
+                </div>
+
+                <div class="text-right hidden sm:block">
+                    <span id="guard-name" class="block text-xs font-bold text-white leading-tight">Security Officer</span>
+                    <span class="block text-[10px] text-emerald-400 font-semibold uppercase">Gate Security Officer</span>
+                </div>
+                <button onclick="Auth.logout()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition">
+                    Sign Out
+                </button>
+                <button id="theme-toggle-btn" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition" title="Toggle Dark/Light Mode">
+                    <span class="theme-toggle-icon">☀️</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+        <!-- Scan Input Terminal Bar -->
+        <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                        <span>🛡️</span> Rapid Gate Transit Terminal
+                    </h1>
+                    <p class="text-xs text-slate-400 mt-0.5">Optical Camera QR Scanner • 6-Digit Numeric Return Code • AI Face Biometric</p>
+                </div>
+                <!-- Action Controls: Camera, Image Upload, Demo Active Passes -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button type="button" onclick="openCameraScanner()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 transition flex items-center gap-2">
+                        <span>📷</span>
+                        <span>Scan with Camera</span>
+                    </button>
+                    <label class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5 cursor-pointer">
+                        <span>📁</span>
+                        <span>Upload QR Image</span>
+                        <input type="file" id="qr-file-input" accept="image/*" class="hidden" onchange="handleQrFileUpload(event)">
+                    </label>
+                    <button type="button" onclick="toggleActivePassesDrawer()" class="px-3 py-2 bg-blue-950 hover:bg-blue-900 text-blue-300 rounded-xl text-xs font-bold border border-blue-800 transition flex items-center gap-1.5">
+                        <span>⚡</span>
+                        <span>Live Active Passes</span>
+                        <span id="active-passes-count-badge" class="px-1.5 py-0.5 bg-blue-600 text-white rounded-full text-[10px] font-mono">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual / Scanner Gun Input Row -->
+            <div class="flex gap-3">
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                    </div>
+                    <input type="text" id="scan-input" autofocus placeholder="Scan QR code token (NXG-...) or enter 6-digit return code..." class="w-full bg-slate-950 border-2 border-slate-700 rounded-xl pl-10 pr-10 py-3 text-xs sm:text-sm text-white font-mono placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition shadow-inner">
+                    <button type="button" onclick="clearScan()" class="absolute right-3 top-3 text-slate-400 hover:text-white text-base">&times;</button>
+                </div>
+                <button type="button" onclick="handleScan()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs sm:text-sm font-extrabold shadow-lg shadow-emerald-600/30 transition flex items-center gap-2 flex-shrink-0">
+                    <span>Verify Scan</span>
+                    <span>→</span>
+                </button>
+            </div>
+
+            <!-- Active Passes Quick Drawer (Collapsible) -->
+            <div id="active-passes-drawer" class="hidden pt-3 border-t border-slate-800 space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>⚡</span> Active Resident Passes Ready for Transit:
+                    </span>
+                    <button type="button" onclick="loadActivePassesDrawer()" class="text-[10px] text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
+                        <span>↻</span> Refresh List
+                    </button>
+                </div>
+                <div id="active-passes-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-52 overflow-y-auto custom-scrollbar">
+                    <div class="text-xs text-slate-500">Loading active resident passes...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Large Verification Display Result Box -->
+        <section id="verification-display">
+            <div class="border-2 border-dashed border-slate-800 rounded-2xl p-12 text-center text-slate-500 space-y-2">
+                <div class="text-4xl mb-2">📷</div>
+                <h3 class="text-sm font-bold text-slate-400">Gate Terminal Scanner Ready</h3>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">
+                    Click <strong>'Scan with Camera'</strong> to optically read the student's QR code on their phone, or enter the <strong>6-digit return code</strong>.
+                </p>
+                <div class="pt-3 flex items-center justify-center gap-3">
+                    <button type="button" onclick="openCameraScanner()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 transition">
+                        📷 Activate Optical Scanner
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Gate Scans Stream -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Live Gate Transit Stream
+                </h2>
+                <span class="text-xs text-slate-500">Last 20 Movements</span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-3">Timestamp</th>
+                            <th class="py-3 px-3">Student Name</th>
+                            <th class="py-3 px-3">Roll Number</th>
+                            <th class="py-3 px-3">Gate</th>
+                            <th class="py-3 px-3">Action Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-scans-body">
+                        <tr><td colspan="5" class="py-4 text-center text-xs text-slate-500">Loading recent scans...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: AI BIOMETRIC FACE DETECTION CHECKPOINT AT GATE RETURN -->
+    <!-- ========================================================================= -->
+    <div id="modal-face-scan" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-lg">
+                        📷
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">AI Face Biometric Checkpoint</h3>
+                        <p class="text-[11px] text-slate-400">Gate Return Verification (गेट पर वापसी फेस डिटेक्शन)</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeFaceModal()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <!-- Student Info Strip -->
+            <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+                <div>
+                    <span id="face-student-name" class="font-bold text-white block">Student Name</span>
+                    <span id="face-student-roll" class="font-mono text-blue-400 text-[11px]">2026CSE001</span>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-950 text-blue-300 border border-blue-800">
+                    RETURN ENTRY
+                </span>
+            </div>
+
+            <!-- Camera Viewfinder with Biometric Overlay HUD -->
+            <div class="relative w-full rounded-2xl overflow-hidden bg-black border-2 border-slate-800 aspect-video flex items-center justify-center">
+                <video id="face-video" class="w-full h-full object-cover" playsinline autoplay muted></video>
+                <canvas id="face-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                
+                <!-- HUD Targeting Box Overlay -->
+                <div id="face-hud-box" class="absolute inset-0 border-2 border-dashed border-blue-500/60 rounded-2xl m-6 pointer-events-none transition-all duration-300 flex items-center justify-center">
+                    <div id="face-scanline" class="w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent absolute shadow-lg shadow-cyan-500 animate-pulse"></div>
+                    <div class="text-center bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/60 text-[11px] text-slate-300 font-mono">
+                        <span id="face-hud-text">Scanning face features...</span>
+                    </div>
+                </div>
+
+                <!-- Live Confidence Badge -->
+                <div class="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-sm border border-slate-700 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold flex items-center gap-1.5 text-white">
+                    <span id="face-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    <span id="face-confidence-text">AI MATCH: 0%</span>
+                </div>
+            </div>
+
+            <!-- Feedback Alert -->
+            <div id="face-feedback-banner" class="p-3 bg-blue-950/40 border border-blue-900/50 rounded-xl text-xs text-blue-300 text-center font-medium">
+                Hold face steady toward the camera to verify resident identity.
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-800">
+                <button type="button" onclick="closeFaceModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">
+                    Cancel Scan
+                </button>
+                <button type="button" id="btn-face-confirm" onclick="finalizeFaceReturn()" disabled class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-700 text-slate-400 cursor-not-allowed transition flex items-center gap-2">
+                    <span>Confirm &amp; Check In</span>
+                    <span>✓</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: LIVE OPTICAL CAMERA QR SCANNER -->
+    <!-- ========================================================================= -->
+    <div id="modal-camera-scanner" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-lg">
+                        📷
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Optical Pass QR Scanner</h3>
+                        <p class="text-[11px] text-slate-400">Scan student's mobile screen or printed pass</p>
+                    </div>
+                </div>
+                <button type="button" onclick="stopCameraScanner()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <!-- Viewfinder Area -->
+            <div class="relative w-full rounded-2xl overflow-hidden bg-black border-2 border-emerald-500/40 aspect-square max-h-72 mx-auto flex items-center justify-center">
+                <div id="qr-reader" class="w-full h-full"></div>
+                <div id="camera-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 text-slate-400 gap-2 pointer-events-none">
+                    <div class="w-8 h-8 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-xs font-medium">Initializing camera sensor...</span>
+                </div>
+                <div id="camera-error-msg" class="hidden absolute inset-0 p-6 flex flex-col items-center justify-center bg-slate-950/95 text-slate-300 text-xs text-center space-y-2">
+                    <span class="text-amber-400 font-bold text-sm">Camera Permission Needed</span>
+                    <p class="text-slate-400 text-[11px]" id="camera-error-detail">Please allow webcam / camera permission in your browser, or use the manual 6-digit return code / image upload.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+                <span>💡 Hold steady within frame</span>
+                <button type="button" onclick="switchCamera()" id="btn-switch-cam" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 text-[11px] font-semibold flex items-center gap-1">
+                    🔄 Flip Camera
+                </button>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800 flex justify-end">
+                <button type="button" onclick="stopCameraScanner()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">
+                    Close Scanner
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden element for image file QR decoding -->
+    <div id="reader-temp" class="hidden"></div>
+
+    <!-- Scripts -->
+    <script src="/js/theme.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/html5-qrcode.min.js"></script>
+    <script src="/js/gate.js"></script>
+    <script src="/js/assistant.js"></script>
+</body>
+</html>
+

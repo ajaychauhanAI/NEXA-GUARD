@@ -1,0 +1,512 @@
+/**
+ * NEXA-GUARD Institutional Universal Theme Engine (Dark & Light Mode)
+ * Master stylesheet delivering 100% legibility, rich contrast, and visual perfection in both modes.
+ */
+
+:root {
+    --transition-speed: 0.2s;
+}
+
+/* =========================================================================
+   LIGHT THEME OVERRIDES (Triggered by html.light-theme)
+   ========================================================================= */
+
+html.light-theme {
+    color-scheme: light;
+}
+
+/* 1. Global Canvas & Background */
+html.light-theme body {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+}
+
+/* 2. Top Navigation, Headers, and Footers */
+html.light-theme nav,
+html.light-theme header:not(.modal-header),
+html.light-theme footer {
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+/* 3. High-Level Cards, Main Containers, and Dark Backgrounds */
+html.light-theme .bg-slate-900,
+html.light-theme .bg-slate-900\/60,
+html.light-theme .bg-slate-900\/80,
+html.light-theme .bg-slate-900\/90,
+html.light-theme .bg-slate-950,
+html.light-theme .bg-slate-950\/60,
+html.light-theme .bg-slate-950\/70,
+html.light-theme .bg-slate-950\/80,
+html.light-theme .bg-slate-950\/90,
+html.light-theme .bg-\[\#090d16\],
+html.light-theme .bg-\[\#090d16\]\/90,
+html.light-theme .bg-\[\#070b14\],
+html.light-theme .bg-\[\#070b14\]\/85,
+html.light-theme .glass-panel,
+html.light-theme [class*="from-slate-900"] {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Call-to-Action Dark Gradient Banners in Light Mode */
+html.light-theme [class*="from-blue-950"],
+html.light-theme [class*="from-purple-950"],
+html.light-theme [class*="from-indigo-950"] {
+    background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 50%, #eef2ff 100%) !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+/* 4. Secondary Sub-Containers & Row Panels */
+html.light-theme .bg-slate-800,
+html.light-theme .bg-slate-800\/90,
+html.light-theme .bg-slate-800\/80,
+html.light-theme .bg-slate-800\/60,
+html.light-theme .bg-slate-800\/40,
+html.light-theme .bg-slate-800\/30,
+html.light-theme .bg-slate-800\/20 {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #1e293b !important;
+}
+
+/* 5. Borders */
+html.light-theme .border-slate-800,
+html.light-theme .border-slate-700,
+html.light-theme .border-slate-800\/80,
+html.light-theme .border-slate-800\/60,
+html.light-theme .border-slate-800\/40,
+html.light-theme .border-slate-700\/80,
+html.light-theme .border-slate-700\/60 {
+    border-color: #e2e8f0 !important;
+}
+
+/* 6. Typography Overrides: Universal High-Contrast Rules */
+html.light-theme .text-slate-100,
+html.light-theme .text-slate-200,
+html.light-theme .text-slate-300 {
+    color: #1e293b !important;
+}
+
+html.light-theme .text-slate-400 {
+    color: #334155 !important; /* Deep legible slate-700 */
+}
+
+html.light-theme .text-slate-500 {
+    color: #475569 !important; /* Slate-600 */
+}
+
+html.light-theme .text-slate-600 {
+    color: #64748b !important;
+}
+
+/* Transform light pastel 300-level shades to deep, accessible 700-level equivalents on light surfaces */
+html.light-theme .text-blue-300 { color: #1d4ed8 !important; }
+html.light-theme .text-emerald-300 { color: #047857 !important; }
+html.light-theme .text-red-300 { color: #b91c1c !important; }
+html.light-theme .text-purple-300 { color: #6d28d9 !important; }
+html.light-theme .text-amber-300 { color: #b45309 !important; }
+html.light-theme .text-indigo-300 { color: #4338ca !important; }
+html.light-theme .text-teal-300 { color: #0f766e !important; }
+
+/* 400-level shades: Deep, high-contrast saturated values for light mode */
+html.light-theme .text-blue-400:not(button):not(a) { color: #1d4ed8 !important; font-weight: 600; }
+html.light-theme .text-emerald-400:not(button):not(a) { color: #047857 !important; font-weight: 600; }
+html.light-theme .text-red-400:not(button):not(a) { color: #b91c1c !important; font-weight: 600; }
+html.light-theme .text-amber-400:not(button):not(a) { color: #b45309 !important; font-weight: 600; }
+html.light-theme .text-purple-400:not(button):not(a) { color: #6d28d9 !important; font-weight: 600; }
+html.light-theme .text-indigo-400:not(button):not(a) { color: #4338ca !important; font-weight: 600; }
+html.light-theme .text-cyan-400:not(button):not(a) { color: #0e7490 !important; font-weight: 600; }
+html.light-theme .text-teal-400:not(button):not(a) { color: #0f766e !important; font-weight: 600; }
+
+/* Headings and body titles: become dark */
+html.light-theme h1:not([class*="bg-clip-text"]),
+html.light-theme h2:not([class*="bg-clip-text"]),
+html.light-theme h3,
+html.light-theme h4,
+html.light-theme h5,
+html.light-theme h6,
+html.light-theme label,
+html.light-theme p.text-white,
+html.light-theme strong.text-white,
+html.light-theme td.text-white,
+html.light-theme th.text-white,
+html.light-theme li.text-white,
+html.light-theme dt.text-white,
+html.light-theme dd.text-white {
+    color: #0f172a !important;
+}
+
+/* Invert all unstyled text-white elements that are NOT solid buttons */
+html.light-theme span.text-white:not([class*="bg-blue"]):not([class*="bg-emerald"]):not([class*="bg-purple"]):not([class*="bg-red"]):not([class*="bg-indigo"]):not([class*="rounded-full"]),
+html.light-theme div.text-white:not([class*="bg-blue"]):not([class*="bg-emerald"]):not([class*="bg-purple"]):not([class*="bg-red"]):not([class*="bg-indigo"]):not([class*="rounded-full"]) {
+    color: #0f172a !important;
+}
+
+/* Naked links with text-white (like Brand logo in navbar) become dark */
+html.light-theme a.text-white:not([class*="bg-blue"]):not([class*="bg-emerald"]):not([class*="bg-purple"]):not([class*="bg-red"]):not([class*="bg-indigo"]):not([class*="from-"]) {
+    color: #0f172a !important;
+}
+
+/* Headings with bg-clip-text: replace white gradient with crisp executive gradient */
+html.light-theme .bg-clip-text {
+    background-image: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+}
+
+/* 7. CRITICAL: Preserve Crisp White Text on Solid Buttons, Badges, and Submit Controls */
+html.light-theme button.bg-blue-600,
+html.light-theme button.bg-emerald-600,
+html.light-theme button.bg-purple-600,
+html.light-theme button.bg-red-600,
+html.light-theme a.bg-blue-600,
+html.light-theme a.bg-emerald-600,
+html.light-theme a.bg-purple-600,
+html.light-theme a.bg-red-600,
+html.light-theme button[type="submit"],
+html.light-theme a[class*="bg-gradient-to-r"],
+html.light-theme button[class*="bg-gradient-to-r"] {
+    color: #ffffff !important;
+}
+
+html.light-theme button.bg-blue-600 *,
+html.light-theme button.bg-emerald-600 *,
+html.light-theme button.bg-purple-600 *,
+html.light-theme button.bg-red-600 *,
+html.light-theme a.bg-blue-600 *,
+html.light-theme a.bg-emerald-600 *,
+html.light-theme a.bg-purple-600 *,
+html.light-theme a.bg-red-600 *,
+html.light-theme button[type="submit"] *,
+html.light-theme a[class*="bg-gradient-to-r"] *,
+html.light-theme button[class*="bg-gradient-to-r"] * {
+    color: #ffffff !important;
+}
+
+/* Inactive / Secondary Buttons in Light Mode */
+html.light-theme button.bg-slate-800,
+html.light-theme a.bg-slate-800,
+html.light-theme button.bg-slate-900,
+html.light-theme a.bg-slate-900 {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #334155 !important;
+}
+
+html.light-theme button.bg-slate-800:hover,
+html.light-theme a.bg-slate-800:hover,
+html.light-theme button.bg-slate-900:hover,
+html.light-theme a.bg-slate-900:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+/* Hover state safety: High contrast link and tab hover colors */
+html.light-theme a.hover\:text-white:hover,
+html.light-theme button.hover\:text-white:hover {
+    color: #2563eb !important; /* Elegant blue accent on hover */
+}
+
+html.light-theme .hover\:text-slate-300:hover {
+    color: #0f172a !important;
+}
+
+html.light-theme .hover\:text-blue-300:hover {
+    color: #1d4ed8 !important;
+}
+
+html.light-theme .hover\:text-emerald-300:hover {
+    color: #047857 !important;
+}
+
+html.light-theme .hover\:text-red-300:hover {
+    color: #b91c1c !important;
+}
+
+/* 8. Pale Tint Icon Badges with /20, /30, /40, /50 Opacities (Both 600 and 500 levels) */
+html.light-theme [class*="bg-blue-600/"],
+html.light-theme [class*="bg-blue-500/"] {
+    background-color: #eff6ff !important;
+    border-color: #bfdbfe !important;
+    color: #1d4ed8 !important;
+}
+
+html.light-theme [class*="bg-emerald-600/"],
+html.light-theme [class*="bg-emerald-500/"] {
+    background-color: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+    color: #047857 !important;
+}
+
+html.light-theme [class*="bg-purple-600/"],
+html.light-theme [class*="bg-purple-500/"] {
+    background-color: #faf5ff !important;
+    border-color: #ddd6fe !important;
+    color: #6d28d9 !important;
+}
+
+html.light-theme [class*="bg-indigo-600/"],
+html.light-theme [class*="bg-indigo-500/"] {
+    background-color: #eef2ff !important;
+    border-color: #c7d2fe !important;
+    color: #4338ca !important;
+}
+
+html.light-theme [class*="bg-red-600/"],
+html.light-theme [class*="bg-red-500/"] {
+    background-color: #fef2f2 !important;
+    border-color: #fecaca !important;
+    color: #b91c1c !important;
+}
+
+html.light-theme [class*="bg-amber-500/"],
+html.light-theme [class*="bg-amber-600/"] {
+    background-color: #fffbeb !important;
+    border-color: #fde68a !important;
+    color: #b45309 !important;
+}
+
+html.light-theme [class*="bg-cyan-600/"],
+html.light-theme [class*="bg-cyan-500/"] {
+    background-color: #ecfeff !important;
+    border-color: #a5f3fc !important;
+    color: #0e7490 !important;
+}
+
+/* 9. Input, Select, Textarea, and Dropdown Options */
+html.light-theme input,
+html.light-theme select,
+html.light-theme textarea {
+    color-scheme: light !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+}
+
+html.light-theme option {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+
+html.light-theme input:focus,
+html.light-theme select:focus,
+html.light-theme textarea:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+html.light-theme input::placeholder,
+html.light-theme textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* 10. High-Contrast Category & Status Pills */
+html.light-theme .bg-blue-950,
+html.light-theme .bg-blue-950\/40,
+html.light-theme .bg-blue-950\/60 {
+    background-color: #eff6ff !important;
+    border-color: #bfdbfe !important;
+    color: #1d4ed8 !important;
+}
+
+html.light-theme .bg-emerald-950,
+html.light-theme .bg-emerald-950\/40,
+html.light-theme .bg-emerald-950\/60,
+html.light-theme .bg-emerald-950\/20 {
+    background-color: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+    color: #047857 !important;
+}
+
+html.light-theme .bg-amber-950,
+html.light-theme .bg-amber-950\/40,
+html.light-theme .bg-amber-950\/60 {
+    background-color: #fffbeb !important;
+    border-color: #fde68a !important;
+    color: #b45309 !important;
+}
+
+html.light-theme .bg-purple-950,
+html.light-theme .bg-purple-950\/40,
+html.light-theme .bg-purple-950\/60 {
+    background-color: #faf5ff !important;
+    border-color: #ddd6fe !important;
+    color: #6d28d9 !important;
+}
+
+html.light-theme .bg-red-950,
+html.light-theme .bg-red-950\/40,
+html.light-theme .bg-red-950\/20 {
+    background-color: #fef2f2 !important;
+    border-color: #fecaca !important;
+    color: #b91c1c !important;
+}
+
+html.light-theme .bg-indigo-950,
+html.light-theme .bg-indigo-950\/40 {
+    background-color: #eef2ff !important;
+    border-color: #c7d2fe !important;
+    color: #4338ca !important;
+}
+
+html.light-theme .bg-teal-950,
+html.light-theme .bg-teal-950\/40 {
+    background-color: #f0fdfa !important;
+    border-color: #99f6e4 !important;
+    color: #0f766e !important;
+}
+
+/* 11. Safety Matrix Comparison Cards */
+html.light-theme [class*="bg-red-950/20"] {
+    background-color: #fef2f2 !important;
+    border-color: #fecaca !important;
+}
+
+html.light-theme [class*="bg-red-900/50"] {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+html.light-theme [class*="bg-emerald-950/20"] {
+    background-color: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+}
+
+html.light-theme [class*="bg-emerald-900/50"] {
+    background-color: #d1fae5 !important;
+    color: #047857 !important;
+}
+
+/* 12. Tables */
+html.light-theme table thead tr {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #475569 !important;
+}
+
+html.light-theme table tr {
+    border-color: #e2e8f0 !important;
+}
+
+html.light-theme table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* 13. Terminal Blocks (Authentic Dark Developer Window) */
+html.light-theme .code-gradient {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+html.light-theme .code-gradient pre {
+    color: #93c5fd !important;
+}
+
+html.light-theme .code-gradient .text-emerald-400 {
+    color: #34d399 !important;
+}
+
+html.light-theme .code-gradient .text-slate-400 {
+    color: #94a3b8 !important;
+}
+
+/* 14. Ambient Glow Effects */
+html.light-theme .radial-hero,
+html.light-theme .radial-glow {
+    background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08), transparent 70%) !important;
+}
+
+html.light-theme .card-glow:hover {
+    box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.12) !important;
+}
+
+/* 15. Login Tabs & Navigation Switchers */
+html.light-theme #tab-nav {
+    background-color: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+html.light-theme #tab-nav button:not(.bg-blue-600) {
+    color: #475569 !important;
+}
+
+html.light-theme #tab-nav button:not(.bg-blue-600):hover {
+    color: #0f172a !important;
+}
+
+/* 16. Wizard Specific: Step Tracker and Mode Selectors */
+html.light-theme nav[aria-label="Onboarding Steps"] {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+html.light-theme nav[aria-label="Onboarding Steps"] .h-0\.5 {
+    background-color: #cbd5e1 !important;
+}
+
+html.light-theme nav[aria-label="Onboarding Steps"] .rounded-full.bg-slate-800 {
+    background-color: #e2e8f0 !important;
+    color: #64748b !important;
+}
+
+html.light-theme #mode-card-manual.border-blue-500 {
+    background-color: #eff6ff !important;
+    border-color: #2563eb !important;
+}
+
+html.light-theme #mode-card-csv,
+html.light-theme #mode-card-skip {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* 17. Modals & Dialog Overlays */
+html.light-theme .fixed.inset-0.bg-black\/70 {
+    background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+html.light-theme .fixed.inset-0 .bg-slate-900 {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 18. NEXA AI Assistant Modal */
+html.light-theme #nexa-ai-modal {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+html.light-theme #nexa-ai-modal header,
+html.light-theme #nexa-ai-modal .p-4.border-b {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+html.light-theme #nexa-ai-modal h4 {
+    color: #0f172a !important;
+}
+
+html.light-theme #nexa-ai-modal .bg-slate-800\/80 {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+html.light-theme #nexa-ai-modal input {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}

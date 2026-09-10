@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXA-GUARD — AI-Powered Smart Hostel Movement & Safety Intelligence Platform</title>
+    <meta name="description"
+        content="Transform hostel movement data into intelligent safety decisions, automated verification, real-time alerts and smarter security resource utilization.">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        nexa: {
+                            dark: '#070b14',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            blue: '#3b82f6',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            red: '#ef4444',
+                            purple: '#8b5cf6'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .radial-hero {
+            background: radial-gradient(circle at 50% -10%, rgba(59, 130, 246, 0.25), rgba(99, 102, 241, 0.1) 45%, transparent 75%);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(59, 130, 246, 0.35);
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.2);
+        }
+
+        .code-gradient {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 13, 22, 0.95) 100%);
+        }
+    </style>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+
+<body
+    class="bg-[#070b14] text-slate-100 font-sans antialiased min-h-screen selection:bg-blue-600 selection:text-white transition-colors duration-200">
+
+    <!-- TOP NAVIGATION HEADER -->
+    <nav class="sticky top-0 z-50 bg-[#070b14]/85 backdrop-blur-xl border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-blue-500/25 transition transform group-hover:scale-105">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <span
+                        class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-blue-400">NEXA-GUARD</span>
+                    <span class="block text-[9px] text-blue-400 tracking-wider font-bold uppercase">Smart Movement &
+                        Safety Intelligence</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-300">
+                <a href="#simulator" class="text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                    <span>AI Simulator</span>
+                </a>
+                <a href="#portals" class="hover:text-white transition">5 Portals</a>
+                <a href="#safety-matrix" class="hover:text-white transition">Safety Matrix</a>
+                <a href="#infrastructure" class="hover:text-white transition">Security & Infra</a>
+                <a href="#compliance" class="hover:text-white transition">Compliance</a>
+            </div>
+
+            <!-- Header Action Items -->
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle-btn"
+                    class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition flex items-center gap-1.5"
+                    title="Toggle Dark/Light Mode">
+                    <span class="theme-toggle-icon">☀️</span>
+                </button>
+                <a href="/login.html"
+                    class="px-3.5 py-2 text-xs font-semibold text-slate-200 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 rounded-xl transition">
+                    Sign In
+                </a>
+                <a href="/wizard.html"
+                    class="px-4 py-2 text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl shadow-lg shadow-blue-600/25 transition transform hover:-translate-y-0.5">
+                    Register Hostel →
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative pt-16 pb-24 radial-hero overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+
+            <!-- Live Status & Innovationll -->
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-xs shadow-2xl backdrop-blur-md">
+                <span class="flex h-2 w-2 relative">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="font-bold text-slate-200">Trusted by Institutions Across India</span>
+                <span class="text-slate-600 hidden sm:inline">•</span>
+                <span class="text-blue-400 font-semibold hidden sm:inline">AICTE & UGC Safety Norms Ready</span>
+            </div>
+
+            <!-- Main Heading -->
+            <div class="space-y-4">
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1]">
+                    Smarter Movement. <br>
+                    <span
+                        class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400">
+                        Safer Campus Hostels.
+                    </span>
+                </h1>
+
+                <p class="text-sm sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
+                    Transform routine student outpasses into actionable safety intelligence with <strong>explainable AI
+                        risk evaluation</strong>, <strong>sub-second cryptographic QR verification</strong>, and
+                    <strong>zero continuous tracking</strong>.
+                </p>
+            </div>
+
+            <!-- Primary and Secondary CTAs -->
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <a href="/wizard.html"
+                    class="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white font-black text-xs sm:text-sm tracking-wide shadow-2xl shadow-blue-600/35 transition transform hover:-translate-y-0.5">
+                    LAUNCH ONBOARDING WIZARD →
+                </a>
+                <a href="/login.html"
+                    class="px-7 py-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 hover:text-white border border-slate-700 font-bold text-xs sm:text-sm transition">
+                    INSTITUTIONAL SIGN IN
+                </a>
+                <a href="/forgot-password.html"
+                    class="px-5 py-4 rounded-xl text-slate-400 hover:text-blue-400 font-semibold text-xs transition flex items-center gap-1.5">
+                    <span>🔑</span>
+                    <span>Forgot Password?</span>
+                </a>
+            </div>
+
+            <!-- 4 Real-World Value Metric Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 text-left">
+                <div class="glass-panel p-4 rounded-2xl">
+                    <span class="text-2xl sm:text-3xl font-black text-blue-400 block font-mono">&lt; 0.8s</span>
+                    <span class="text-xs font-bold text-white block mt-0.5">Gate Verification</span>
+                    <span class="text-[10px] text-slate-400 block">Cryptographic QR + 6-digit PIN</span>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl">
+                    <span class="text-2xl sm:text-3xl font-black text-emerald-400 block font-mono">0 - 100</span>
+                    <span class="text-xs font-bold text-white block mt-0.5">Explainable AI Risk</span>
+                    <span class="text-[10px] text-slate-400 block">Temporal & behavioral signals</span>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl">
+                    <span class="text-2xl sm:text-3xl font-black text-purple-400 block font-mono">100%</span>
+                    <span class="text-xs font-bold text-white block mt-0.5">Relational Ledger</span>
+                    <span class="text-[10px] text-slate-400 block">PostgreSQL immutable audit trail</span>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl">
+                    <span class="text-2xl sm:text-3xl font-black text-amber-400 block font-mono">Zero</span>
+                    <span class="text-xs font-bold text-white block mt-0.5">Continuous GPS</span>
+                    <span class="text-[10px] text-slate-400 block">DPDP Act 2023 privacy compliant</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LIVE INTERACTIVE AI RISK SIMULATOR WIDGET (INTERACTIVE) -->
+    <section id="simulator" class="py-16 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-blue-500/20 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-5 mb-6">
+                <div>
+                    <div
+                        class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950 px-2.5 py-0.5 rounded-full border border-blue-800 mb-1">
+                        <span>⚡</span> Interactive Evaluator
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black text-white">Live Multi-Signal AI Risk Simulator</h2>
+                    <p class="text-xs text-slate-400">Test how NEXA-GUARD evaluates student outpasses in real time with
+                        transparent rationale.</p>
+                </div>
+                <span
+                    class="text-xs font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-3 py-1 rounded-xl self-start sm:self-center font-bold">
+                    ACTIVE ENGINE v2.0
+                </span>
+            </div>
+
+            <!-- Simulator Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Controls Column -->
+                <div class="lg:col-span-7 space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1.5">Destination & Movement Purpose</label>
+                        <select id="sim-dest" onchange="calculateSimRisk()"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                            <option value="ACADEMIC">Academic Workshop / Campus Library (Approved Zone)</option>
+                            <option value="MARKET">Local Market & Medical Supplies (Standard Perimeter)</option>
+                            <option value="DINING">Night Eatery / Late Social Movement (Late Window)</option>
+                            <option value="REMOTE">Unverified Remote City / Night Transit (High Disciplinary Alert)
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1.5">Requested Return Window</label>
+                            <select id="sim-time" onchange="calculateSimRisk()"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                                <option value="DAYLIGHT">14:00 - 18:00 (Broad Daylight)</option>
+                                <option value="EVENING">18:00 - 20:30 (Evening Window)</option>
+                                <option value="CURFEW_EDGE">20:30 - 21:30 (Gate Closing Cutoff Edge)</option>
+                                <option value="POST_CURFEW">22:00 - 01:00 (Post-Gate Closing Hazard)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1.5">Resident Historical Delay
+                                Rate</label>
+                            <select id="sim-history" onchange="calculateSimRisk()"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                                <option value="CLEAN">0% (Spotless Track Record)</option>
+                                <option value="MILD">15% (Occasional Delay &lt;10m)</option>
+                                <option value="CHRONIC">60% (Recurrent Gate Deadline Breach)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Visual Signal Weight Distribution -->
+                    <div class="pt-3 border-t border-slate-800/80 space-y-2">
+                        <span class="text-[11px] font-bold text-slate-400 block uppercase tracking-wider">Multi-Signal
+                            Weight Breakdown</span>
+                        <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+                            <div class="p-2 bg-slate-900/90 rounded-lg border border-slate-800">
+                                <span class="text-blue-400 font-bold block">40% Weight</span>
+                                <span class="text-slate-400">Temporal Urgency</span>
+                            </div>
+                            <div class="p-2 bg-slate-900/90 rounded-lg border border-slate-800">
+                                <span class="text-purple-400 font-bold block">35% Weight</span>
+                                <span class="text-slate-400">Behavioral History</span>
+                            </div>
+                            <div class="p-2 bg-slate-900/90 rounded-lg border border-slate-800">
+                                <span class="text-amber-400 font-bold block">25% Weight</span>
+                                <span class="text-slate-400">Destination Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Risk Output Column -->
+                <div
+                    class="lg:col-span-5 bg-slate-950/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Calculated AI Risk
+                            Score</span>
+                        <span id="sim-badge"
+                            class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                            LOW RISK
+                        </span>
+                    </div>
+
+                    <div class="flex items-baseline gap-2">
+                        <span id="sim-score" class="text-5xl font-black font-mono text-emerald-400">12</span>
+                        <span class="text-xs text-slate-500 font-bold">/ 100</span>
+                    </div>
+
+                    <!-- Progress Bar Indicator -->
+                    <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                        <div id="sim-bar" class="h-full bg-emerald-500 transition-all duration-500 w-[12%]"></div>
+                    </div>
+
+                    <!-- Explainable AI Natural Language Reasoning -->
+                    <div class="p-3.5 bg-slate-900 rounded-xl border border-slate-800 text-[11px] space-y-1">
+                        <span class="font-bold text-slate-300 block">Explainable Rationale:</span>
+                        <p id="sim-reason" class="text-slate-400 leading-relaxed">
+                            Request is well within daylight return boundaries. Resident profile has zero prior
+                            infractions. Low safety overhead detected.
+                        </p>
+                    </div>
+
+                    <div class="text-[10px] text-slate-500 flex items-center justify-between pt-1">
+                        <span>Deterministic scoring</span>
+                        <span class="text-blue-400">Wardens retain override rights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM VS SOLUTION COMPARISON (MATRIX) -->
+    <section id="safety-matrix" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800">
+        <div class="text-center max-w-3xl mx-auto mb-14">
+            <span class="text-xs font-bold uppercase tracking-widest text-red-400">Campus Safety Matrix</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Paper Chaos vs. AI Intelligence</h2>
+            <p class="text-slate-400 text-sm mt-3">
+                Why forward-thinking universities and residential institutes are replacing paper logbooks with
+                NEXA-GUARD.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Legacy Paper Registers Card -->
+            <div class="p-6 bg-red-950/20 border border-red-900/40 rounded-3xl space-y-4">
+                <div class="flex items-center gap-3">
+                    <span
+                        class="w-8 h-8 rounded-xl bg-red-900/50 text-red-400 flex items-center justify-center font-bold text-sm">✕</span>
+                    <h3 class="text-lg font-bold text-red-300">Legacy Paper Pass Reality</h3>
+                </div>
+                <ul class="space-y-3 text-xs text-slate-300">
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-red-400 font-bold">✗</span>
+                        <span><strong>Forged Logbooks:</strong> Students fake signatures or write illegible contact
+                            numbers in physical registers with zero audit trail.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-red-400 font-bold">✗</span>
+                        <span><strong>Blind Warden Approvals:</strong> Wardens sign 200+ slips daily with zero context
+                            on student movement frequency or past delay trends.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-red-400 font-bold">✗</span>
+                        <span><strong>Midnight Roll-Call Surprises:</strong> Missing students are only discovered hours
+                            after gate closing during manual room-to-room knock checks.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-red-400 font-bold">✗</span>
+                        <span><strong>Mess Kitchen Food Wastage:</strong> Hostel kitchens overcook for hundreds of
+                            absent students due to missing leave visibility.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- NEXA-GUARD Platform Card -->
+            <div class="p-6 bg-emerald-950/20 border border-emerald-900/40 rounded-3xl space-y-4">
+                <div class="flex items-center gap-3">
+                    <span
+                        class="w-8 h-8 rounded-xl bg-emerald-900/50 text-emerald-400 flex items-center justify-center font-bold text-sm">✓</span>
+                    <h3 class="text-lg font-bold text-emerald-300">NEXA-GUARD Automated Safety</h3>
+                </div>
+                <ul class="space-y-3 text-xs text-slate-300">
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-emerald-400 font-bold">✓</span>
+                        <span><strong>Cryptographic Digital QR:</strong> Server-generated HMAC token with 6-digit return
+                            codes scanned at gates in sub-second time.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-emerald-400 font-bold">✓</span>
+                        <span><strong>Explainable Multi-Signal AI Risk:</strong> Dynamic 0-100 scoring flagging
+                            high-risk requests before warden approval.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-emerald-400 font-bold">✓</span>
+                        <span><strong>Instant Overdue Alerts:</strong> Automated 60-second cron job notifies wardens and
+                            parents the moment gate grace window expires.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="text-emerald-400 font-bold">✓</span>
+                        <span><strong>Predictive Dining Intelligence:</strong> Real-time meal turnout forecasts
+                            preventing massive dining hall food waste.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5-ROLE INTERACTIVE PORTAL SHOWCASE -->
+    <section id="portals" class="py-16 bg-slate-950/60 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="text-xs font-bold uppercase tracking-widest text-blue-400">Unified Multi-Tenant
+                    Experience</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Tailored Portals for Every Stakeholder
+                </h2>
+                <p class="text-slate-400 text-sm mt-3">
+                    Strict Role-Based Access Control (RBAC) isolates student privacy while empowering security
+                    personnel.
+                </p>
+            </div>
+
+            <!-- Role Tabs Navigation -->
+            <div class="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+                <button type="button" onclick="showPortalCard('admin')" id="role-tab-admin"
+                    class="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs transition shadow-md">
+                    🏛️ Chief Admin
+                </button>
+                <button type="button" onclick="showPortalCard('warden')" id="role-tab-warden"
+                    class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs transition">
+                    📋 Hostel Warden
+                </button>
+                <button type="button" onclick="showPortalCard('guard')" id="role-tab-guard"
+                    class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs transition">
+                    🛡️ Security Guard
+                </button>
+                <button type="button" onclick="showPortalCard('student')" id="role-tab-student"
+                    class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs transition">
+                    🎓 Student Resident
+                </button>
+                <button type="button" onclick="showPortalCard('parent')" id="role-tab-parent"
+                    class="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs transition">
+                    👨‍👩‍👦 Parent Guardian
+                </button>
+            </div>
+
+            <!-- Role Details Display Card -->
+            <div id="portal-display" class="glass-panel p-8 rounded-3xl max-w-4xl mx-auto space-y-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ENTERPRISE SECURITY & INFRASTRUCTURE -->
+    <section id="infrastructure" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-5">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/60 border border-blue-800/80 text-[11px] font-bold tracking-wider text-blue-400 uppercase">
+                    <span>🛡️</span> Zero-Trust Architecture
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">
+                    Enterprise Security & Resilience
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Engineered for high-volume campus transit environments. NEXA-GUARD combines real-time cryptographic
+                    verification with institutional privacy safeguards — ensuring complete safety without compromising
+                    operational speed.
+                </p>
+
+                <div class="space-y-3 pt-1 text-xs">
+                    <div
+                        class="p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span class="text-slate-300 font-medium">Transit Verification Latency</span>
+                        </div>
+                        <span class="font-bold font-mono text-emerald-400">&lt; 150ms per Query</span>
+                    </div>
+                    <div
+                        class="p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                            <span class="text-slate-300 font-medium">Cryptographic Pass Signing</span>
+                        </div>
+                        <span class="font-bold font-mono text-blue-400">HMAC-SHA256 Single-Use Tokens</span>
+                    </div>
+                    <div
+                        class="p-3.5 bg-slate-900/90 border border-slate-800 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                            <span class="text-slate-300 font-medium">Data Privacy Architecture</span>
+                        </div>
+                        <span class="font-bold font-mono text-purple-400">Zero Continuous Tracking</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enterprise Infrastructure Security Telemetry Panel -->
+            <div
+                class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-4 shadow-2xl relative overflow-hidden">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Campus Security
+                            Infrastructure</span>
+                    </div>
+                    <span
+                        class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-800 text-emerald-400 font-bold">ALL
+                        SYSTEMS OPERATIONAL</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div class="p-3.5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1">
+                        <div class="flex items-center gap-2 text-blue-400 font-bold">
+                            <span>🔐</span>
+                            <span>Cryptographic Passes</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            HMAC-SHA256 tamper-evident tokens prevent pass forgery, duplication, and unauthorized reuse.
+                        </p>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1">
+                        <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                            <span>⚡</span>
+                            <span>High-Speed Transit</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            Sub-150ms verification queries eliminate gate queues during peak campus movement hours.
+                        </p>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1">
+                        <div class="flex items-center gap-2 text-purple-400 font-bold">
+                            <span>🛡️</span>
+                            <span>Multi-Tenant Isolation</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            Strict perimeter fencing ensures complete cryptographic data isolation across hostel blocks.
+                        </p>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-1">
+                        <div class="flex items-center gap-2 text-amber-400 font-bold">
+                            <span>📜</span>
+                            <span>Immutable Audit Ledger</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            Tamper-resistant audit trails record all movement authorizations and administrative
+                            overrides.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Live Operational Continuity Banner -->
+                <div
+                    class="p-3.5 bg-gradient-to-r from-blue-950/40 via-slate-900/60 to-indigo-950/40 border border-blue-500/20 rounded-2xl flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="text-blue-400">📶</span>
+                        <div>
+                            <span class="font-bold text-white block">Offline Fault Tolerance</span>
+                            <span class="text-[10px] text-slate-400">Redundant cached validation keeps gates operational
+                                during network drops</span>
+                        </div>
+                    </div>
+                    <span
+                        class="font-mono text-emerald-400 font-bold text-xs bg-slate-900/90 px-2.5 py-1 rounded-lg border border-slate-800 whitespace-nowrap">
+                        99.9% UPTIME
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INSTITUTIONAL COMPLIANCE & PRIVACY GUARANTEE -->
+    <section id="compliance" class="py-16 bg-slate-950/60 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text-purple-400">Regulatory Framework</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Privacy By Design & Regulatory
+                    Compliance</h2>
+                <p class="text-slate-400 text-sm mt-3">
+                    NEXA-GUARD is strictly compliant with Indian educational safety and personal data privacy
+                    legislation.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                    <div class="text-2xl mb-1">📜</div>
+                    <h3 class="text-base font-bold text-white">DPDP Act 2023 Aligned</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Strict data minimization. Coordinates are gathered only at the moment of gate transit or pass
+                        submission. Continuous background tracking is strictly blocked.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                    <div class="text-2xl mb-1">🏛️</div>
+                    <h3 class="text-base font-bold text-white">AICTE & UGC Safety Ready</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Meets all national higher education safety mandates for mandatory hostel entry/exit recording,
+                        parent notification records, and emergency roll-call readiness.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                    <div class="text-2xl mb-1">🔒</div>
+                    <h3 class="text-base font-bold text-white">Zero Biometric Exposure</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Avoids high-liability fingerprint and facial data storage on web servers. Movement verification
+                        is 100% cryptographic token & QR based.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION BANNER -->
+    <section class="py-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div
+            class="bg-gradient-to-tr from-blue-950/60 via-slate-900 to-indigo-950/60 border border-blue-500/30 rounded-3xl p-10 sm:p-14 shadow-2xl space-y-6">
+            <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Ready to Upgrade Your Campus Residential Safety?
+            </h2>
+            <p class="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Set up your custom hostel infrastructure in minutes using our step-by-step onboarding wizard or sign in
+                to your authorized command center.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 pt-2">
+                <a href="/wizard.html"
+                    class="px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white rounded-xl text-xs sm:text-sm font-extrabold shadow-xl shadow-blue-600/30 transition transform hover:-translate-y-0.5">
+                    Launch Onboarding Setup Wizard →
+                </a>
+                <a href="/login.html"
+                    class="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 rounded-xl text-xs sm:text-sm font-bold transition">
+                    Access Institutional Login
+                </a>
+                <a href="/forgot-password.html"
+                    class="px-6 py-4 text-xs font-bold text-slate-400 hover:text-blue-400 transition flex items-center gap-1.5">
+                    <span>🔑</span> Recover Credentials
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800/80 py-12 bg-[#070b14] text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 space-y-4">
+            <div class="flex items-center justify-center gap-2">
+                <span
+                    class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold">🛡️</span>
+                <span class="font-extrabold text-white text-sm">NEXA-GUARD</span>
+                <span class="text-slate-600">•</span>
+                <span class="text-slate-400">Smarter Movement. Safer Hostels.</span>
+            </div>
+            <p class="text-slate-500 max-w-lg mx-auto">
+                Built for Institutions Across India • Designed for College Hostels, Universities & Campus Residential
+                Security.
+            </p>
+            <div class="flex flex-wrap justify-center gap-5 text-xs text-slate-400 pt-2">
+                <a href="/wizard.html" class="text-blue-400 hover:underline font-bold">Register Your Hostel</a>
+                <span>•</span>
+                <a href="/login.html" class="text-blue-400 hover:underline">Institutional Login</a>
+                <span>•</span>
+                <a href="/forgot-password.html" class="text-blue-400 hover:underline">Reset / Forgot Password</a>
+                <span>•</span>
+                <a href="/admin.html" class="hover:text-white">Command Center</a>
+                <span>•</span>
+                <a href="#simulator" class="hover:text-white">AI Simulator</a>
+                <span>•</span>
+                <a href="#infrastructure" class="hover:text-white">Security & Infra</a>
+            </div>
+            <p class="text-slate-600 text-[11px] pt-4">
+                © 2026 NEXA-GUARD Platform. Cryptographic Security & Safety Intelligence. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/theme.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // =========================================================================
+        // INTERACTIVE AI RISK SIMULATOR LOGIC
+        // =========================================================================
+        function calculateSimRisk() {
+            const dest = document.getElementById('sim-dest').value;
+            const time = document.getElementById('sim-time').value;
+            const history = document.getElementById('sim-history').value;
+
+            let score = 10;
+            let reasons = [];
+
+            // 1. Destination Factor (25%)
+            if (dest === 'ACADEMIC') {
+                score += 5;
+                reasons.push('Academic purpose poses minimal baseline safety overhead.');
+            } else if (dest === 'MARKET') {
+                score += 15;
+                reasons.push('Standard commercial zone movement recorded within safe perimeter.');
+            } else if (dest === 'DINING') {
+                score += 28;
+                reasons.push('Late social/dining zone movement increases evening surveillance alert.');
+            } else if (dest === 'REMOTE') {
+                score += 40;
+                reasons.push('High-risk unverified remote location triggers mandatory administrative review.');
+            }
+
+            // 2. Time Factor (40%)
+            if (time === 'DAYLIGHT') {
+                score += 0;
+            } else if (time === 'EVENING') {
+                score += 12;
+            } else if (time === 'CURFEW_EDGE') {
+                score += 24;
+                reasons.push('Return cutoff edge borders hostel gate closing deadline.');
+            } else if (time === 'POST_CURFEW') {
+                score += 38;
+                reasons.push('Post-deadline return window poses acute security escalation hazard.');
+            }
+
+            // 3. History Factor (35%)
+            if (history === 'CLEAN') {
+                score += 0;
+            } else if (history === 'MILD') {
+                score += 10;
+                reasons.push('Minor past return delays detected in resident history.');
+            } else if (history === 'CHRONIC') {
+                score += 26;
+                reasons.push('Chronic repeat gate deadline breach history flagged by behavioral radar.');
+            }
+
+            score = Math.min(Math.max(score, 8), 98);
+
+            const scoreEl = document.getElementById('sim-score');
+            const barEl = document.getElementById('sim-bar');
+            const badgeEl = document.getElementById('sim-badge');
+            const reasonEl = document.getElementById('sim-reason');
+
+            scoreEl.textContent = score;
+            barEl.style.width = `${score}%`;
+
+            if (score <= 35) {
+                scoreEl.className = 'text-5xl font-black font-mono text-emerald-400';
+                barEl.className = 'h-full bg-emerald-500 transition-all duration-500';
+                badgeEl.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950 text-emerald-400 border border-emerald-800';
+                badgeEl.textContent = 'LOW RISK (AUTO-ELIGIBLE)';
+            } else if (score <= 65) {
+                scoreEl.className = 'text-5xl font-black font-mono text-amber-400';
+                barEl.className = 'h-full bg-amber-500 transition-all duration-500';
+                badgeEl.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-950 text-amber-400 border border-amber-800';
+                badgeEl.textContent = 'MODERATE RISK (STANDARD REVIEW)';
+            } else {
+                scoreEl.className = 'text-5xl font-black font-mono text-red-400';
+                barEl.className = 'h-full bg-red-500 transition-all duration-500';
+                badgeEl.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-red-950 text-red-400 border border-red-800';
+                badgeEl.textContent = 'HIGH RISK (WARDEN OVERRIDE REQUIRED)';
+            }
+
+            reasonEl.textContent = reasons.join(' ');
+        }
+
+        // =========================================================================
+        // 5-PORTAL TAB SWITCHER
+        // =========================================================================
+        const portalData = {
+            admin: {
+                title: 'Master Administrator / Principal',
+                badge: 'CAMPUS COMMAND CENTER',
+                badgeColor: 'text-blue-400 bg-blue-950 border-blue-800',
+                desc: 'Supervise all hostel blocks, monitor gate security guard shifts, configure gate policies, review multi-hostel safety metrics, and optimize mess catering demands.',
+                features: [
+                    'Multi-block floor and room inventory management',
+                    'Gate policy enforcement and late penalty rate configurations',
+                    'Gate security guard shift coordination and real-time checkpoint telemetry',
+                    'Zero-food-waste mess catering requisition calculation based on active student presence',
+                    'Live roster of students outside campus with real-time countdown to gate closing',
+                    'Role provisioning and cryptographic credential management'
+                ],
+                cta: '/admin.html'
+            },
+            warden: {
+                title: 'Hostel Warden / Floor Supervisor',
+                badge: 'STUDENT SAFETY & DISCIPLINE',
+                badgeColor: 'text-amber-400 bg-amber-950 border-amber-800',
+                desc: 'Review outpass applications backed by explainable AI risk scoring, track residents currently outside, receive immediate overdue alerts, and manage emergency home passes.',
+                features: [
+                    '1-Click pass review with transparent AI risk breakdown (0–100)',
+                    'Live roster of students outside campus with real-time countdown to curfew',
+                    'Instant SMS/Email alerts dispatched to parents when students are overdue',
+                    'Disciplinary logs and pass history search across wings and rooms'
+                ],
+                cta: '/warden.html'
+            },
+            guard: {
+                title: 'Security Gate Officer',
+                badge: 'CHECKPOINT CONTROL',
+                badgeColor: 'text-emerald-400 bg-emerald-950 border-emerald-800',
+                desc: 'Scan cryptographic QR codes on student passes in sub-second time. Verify return transits with 6-digit backup codes with offline-resilient fallbacks.',
+                features: [
+                    'Hardware & camera barcode scanner supporting HMAC-SHA256 tokens',
+                    'Instant photo identification and room validation on scan',
+                    '6-Digit return verification code preventing proxy entries',
+                    'Gate queue velocity telemetry maintaining &lt;0.8s per transit'
+                ],
+                cta: '/guard.html'
+            },
+            student: {
+                title: 'Resident Student',
+                badge: 'SMART DIGITAL OUTPASS',
+                badgeColor: 'text-purple-400 bg-purple-950 border-purple-800',
+                desc: 'Apply for movement outpasses in seconds with event-based GPS context. Present high-contrast cryptographic QR codes at gates with zero battery-draining continuous tracking.',
+                features: [
+                    'Instant outpass requests with destination category and return ETA',
+                    'Cryptographically signed pass with dynamic return PIN code',
+                    'Live gate closing countdown and in-app status updates',
+                    'Zero background location surveillance protecting student privacy'
+                ],
+                cta: '/student.html'
+            },
+            parent: {
+                title: 'Parent / Guardian',
+                badge: 'TRANSPARENT GUARDIANSHIP',
+                badgeColor: 'text-teal-400 bg-teal-950 border-teal-800',
+                desc: 'Approve extended home passes, receive automated exit/entry email notifications, and check real-time safety status without intrusive calls during night hours.',
+                features: [
+                    '1-Click authorization for multi-day home leave passes',
+                    'Automated SMS/Email timestamp notifications when student leaves/returns',
+                    'Live ward safety status indicator (In-Hostel vs. Outside)',
+                    'Direct emergency contact line to assigned hostel chief warden'
+                ],
+                cta: '/parent.html'
+            }
+        };
+
+        function showPortalCard(role) {
+            const data = portalData[role];
+            if (!data) return;
+
+            // Update tab styles
+            const roles = ['admin', 'warden', 'guard', 'student', 'parent'];
+            roles.forEach(r => {
+                const tab = document.getElementById(`role-tab-${r}`);
+                if (r === role) {
+                    tab.className = 'px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs transition shadow-md';
+                } else {
+                    tab.className = 'px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white font-semibold text-xs transition';
+                }
+            });
+
+            const display = document.getElementById('portal-display');
+            display.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${data.badgeColor} inline-block mb-1">
+                            ${data.badge}
+                        </span>
+                        <h3 class="text-xl font-black text-white">${data.title}</h3>
+                    </div>
+                    <a href="${data.cta}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition border border-slate-700 self-start sm:self-center">
+                        Launch Role Portal →
+                    </a>
+                </div>
+
+                <p class="text-xs text-slate-300 leading-relaxed">${data.desc}</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    ${data.features.map(f => `
+                        <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 flex items-start gap-2 text-xs">
+                            <span class="text-emerald-400 font-bold">✓</span>
+                            <span class="text-slate-300">${f}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateSimRisk();
+            showPortalCard('admin');
+        });
+    </script>
+</body>
+
+</html>

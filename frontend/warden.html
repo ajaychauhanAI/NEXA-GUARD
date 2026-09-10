@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warden Command Portal — NEXA-GUARD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body class="bg-[#090d16] text-slate-100 font-sans min-h-screen selection:bg-blue-600 selection:text-white pb-16 transition-colors duration-200">
+
+    <!-- Navigation Header -->
+    <nav class="bg-slate-900/80 border-b border-slate-800 sticky top-0 z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-amber-600 flex items-center justify-center text-white font-bold shadow-md shadow-amber-500/20">
+                        🛡️
+                    </div>
+                    <span class="font-extrabold text-lg tracking-tight text-white">NEXA-GUARD</span>
+                </a>
+                <span class="hidden sm:inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-400 border border-amber-800">
+                    Warden Decision Support
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="openWardenStudentModal()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-md shadow-blue-500/20 transition">
+                    <span>🎓 +</span> Onboard Student
+                </button>
+
+                <div class="text-right hidden sm:block pl-2 border-l border-slate-800">
+                    <span id="header-user-name" class="block text-xs font-bold text-white leading-tight">Warden</span>
+                    <span id="header-user-role" class="block text-[10px] text-slate-400 font-semibold uppercase">Block Warden</span>
+                </div>
+                <button onclick="Auth.logout()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition">
+                    Sign Out
+                </button>
+                <button id="theme-toggle-btn" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition" title="Toggle Dark/Light Mode">
+                    <span class="theme-toggle-icon">☀️</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+        <!-- Top Operational Metrics Bar -->
+        <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Total Residents</span>
+                <span id="stat-total" class="text-2xl font-black text-white mt-1 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider block">Inside Campus</span>
+                <span id="stat-inside" class="text-2xl font-black text-emerald-400 mt-1 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-cyan-400 uppercase tracking-wider block">Outside Movement</span>
+                <span id="stat-outside" class="text-2xl font-black text-cyan-400 mt-1 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-blue-400 uppercase tracking-wider block">Pending Review</span>
+                <span id="stat-pending" class="text-2xl font-black text-blue-400 mt-1 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-red-400 uppercase tracking-wider block">Late Gate Returns</span>
+                <span id="stat-overdue" class="text-2xl font-black text-red-400 mt-1 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-purple-400 uppercase tracking-wider block">High Risk Passes</span>
+                <span id="stat-high-risk" class="text-2xl font-black text-purple-400 mt-1 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-emerald-900/40 rounded-2xl p-4">
+                <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider block">AI Auto-Approved</span>
+                <span id="stat-ai-approved" class="text-2xl font-black text-emerald-400 mt-1 block">0</span>
+            </div>
+        </section>
+
+        <!-- Main Pending Requests Review Queue -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                        <span>🛡️</span> AI-Assisted Warden Movement Triage Queue
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">High-risk movements &amp; Home passes prioritize human oversight. Routine safe day passes are auto-evaluated by AI.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleAIApprovedModal()" id="btn-view-ai-log" class="px-3.5 py-1.5 bg-emerald-950/80 border border-emerald-700/60 hover:bg-emerald-900 text-emerald-300 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                        <span>🤖</span> AI Auto-Approved Feed (<span id="btn-ai-count">0</span>)
+                    </button>
+                    <button onclick="loadWardenDashboard()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold border border-slate-700 transition">
+                        ↻ Refresh Queue
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">Student</th>
+                            <th class="py-3 px-4">Pass &amp; Destination</th>
+                            <th class="py-3 px-4">Time Window</th>
+                            <th class="py-3 px-4">AI Risk Gauge</th>
+                            <th class="py-3 px-4">Explainable Signals</th>
+                            <th class="py-3 px-4 text-right">Action Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-requests-body">
+                        <tr><td colspan="6" class="py-8 text-center text-xs text-slate-500">Loading pending requests...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Two Column: Overdue Monitor & Quick Directory -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Overdue Passes -->
+            <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-red-400 uppercase tracking-wider flex items-center gap-2">
+                        <span>⚠️</span> Active Late Gate Return Students
+                    </h3>
+                    <span class="text-xs text-slate-500">Auto-Flagged Past Gate Deadline</span>
+                </div>
+                <div id="overdue-list-container" class="space-y-3">
+                    <p class="text-xs text-slate-500 py-4">Checking overdue passes...</p>
+                </div>
+            </section>
+
+            <!-- Student Directory Lookup -->
+            <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Instant Resident Directory</h3>
+                    <span class="text-xs text-slate-500">Search by Name or Roll No</span>
+                </div>
+                <div>
+                    <input type="text" id="search-query" placeholder="Type student name or roll number..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 mb-3">
+                </div>
+                <div id="search-results" class="space-y-2 max-h-64 overflow-y-auto">
+                    <p class="text-xs text-slate-500 py-3">Type above to search resident movement statuses in real time.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal: Onboard Student from Warden Portal -->
+    <div id="modal-warden-student" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold">
+                        🎓
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Onboard Resident Student</h3>
+                        <p class="text-[11px] text-slate-400">Registers student and auto-generates linked Parent account.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeWardenModal()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleWardenCreateStudent(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Full Name *</label>
+                        <input type="text" id="w-stu-name" required placeholder="e.g. Vikramaditya Roy" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Roll Number *</label>
+                        <input type="text" id="w-stu-roll" required placeholder="e.g. 2026CSE099" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono uppercase focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Official Email *</label>
+                        <input type="email" id="w-stu-email" required placeholder="vikram@institution.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Password *</label>
+                        <input type="password" id="w-stu-pass" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Student Phone *</label>
+                        <input type="tel" id="w-stu-phone" required placeholder="+91-9876543210" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Course & Year</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="w-stu-course" placeholder="Course (e.g. B.Tech)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500">
+                            <select id="w-stu-year" class="bg-slate-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white">
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guardian Details -->
+                <div class="pt-3 border-t border-slate-800 space-y-2">
+                    <span class="block text-xs font-bold text-emerald-400 uppercase tracking-wider">Guardian / Parent Details (Real Parent Account)</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Guardian Name *</label>
+                            <input type="text" id="w-guard-name" required placeholder="e.g. Debabrata Roy" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Guardian Phone *</label>
+                            <input type="tel" id="w-guard-phone" required placeholder="+91-9876500099" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Guardian Real Email * (Pass Verification &amp; Parent Portal)</label>
+                            <input type="email" id="w-guard-email" required placeholder="parent@gmail.com" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeWardenModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="btn-warden-submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">
+                        Register Student &amp; Create Parent Account →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Auto-Approved Passes Feed Modal -->
+    <div id="modal-ai-feed" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-3xl w-full p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-lg">
+                        🤖
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">NEXA-GUARD AI Auto-Approved Routine Passes</h3>
+                        <p class="text-[11px] text-slate-400">Routine low-risk day outpasses safely processed by AI automation without manual warden bottleneck.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleAIApprovedModal()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+            <div id="ai-feed-content" class="overflow-y-auto flex-1 space-y-2 pr-1 custom-scrollbar">
+                <p class="text-xs text-slate-500 text-center py-6">Loading AI auto-approved movements...</p>
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex justify-end">
+                <button type="button" onclick="toggleAIApprovedModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-white">Close Feed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/theme.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/warden.js"></script>
+    <script src="/js/assistant.js"></script>
+    <script>
+        function openWardenStudentModal() {
+            const modal = document.getElementById('modal-warden-student');
+            modal.querySelector('form')?.reset();
+            modal.classList.remove('hidden');
+        }
+        function closeWardenModal() {
+            document.getElementById('modal-warden-student').classList.add('hidden');
+        }
+        function toggleAIApprovedModal() {
+            const modal = document.getElementById('modal-ai-feed');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                renderAIFeedModal();
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+        async function handleWardenCreateStudent(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-warden-submit');
+            btn.disabled = true;
+            btn.textContent = 'Registering student...';
+
+            const payload = {
+                fullName: document.getElementById('w-stu-name').value.trim(),
+                rollNumber: document.getElementById('w-stu-roll').value.trim().toUpperCase(),
+                email: document.getElementById('w-stu-email').value.trim(),
+                password: document.getElementById('w-stu-pass').value,
+                phone: document.getElementById('w-stu-phone').value.trim(),
+                course: document.getElementById('w-stu-course').value.trim(),
+                year: parseInt(document.getElementById('w-stu-year').value) || 1,
+                guardianName: document.getElementById('w-guard-name').value.trim(),
+                guardianPhone: document.getElementById('w-guard-phone').value.trim(),
+                guardianEmail: document.getElementById('w-guard-email').value.trim()
+            };
+
+            try {
+                const res = await API.createStudent(payload);
+                API.toast(`✓ Student ${payload.fullName} registered successfully!`, 'success');
+                closeWardenModal();
+                await loadWardenDashboard();
+            } catch (err) {
+                API.toast(err.message || 'Failed to register student.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Register Student & Create Parent Account →';
+            }
+        }
+    </script>
+</body>
+</html>

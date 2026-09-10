@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center — NEXA-GUARD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 9999px;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body class="bg-[#090d16] text-slate-100 font-sans min-h-screen selection:bg-blue-600 selection:text-white pb-24 transition-colors duration-200">
+
+    <!-- Top Navigation -->
+    <nav class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-purple-500/20">
+                        📊
+                    </div>
+                    <span class="font-extrabold text-lg tracking-tight text-white">NEXA-GUARD</span>
+                </a>
+                <span class="hidden sm:inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-400 border border-purple-800">
+                    Hostel Command Center
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Direct Onboarding Action Buttons -->
+                <button onclick="openAddStudentModal()" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-md shadow-blue-500/20 transition">
+                    <span>+</span> Onboard Student
+                </button>
+                <button onclick="openAddStaffModal()" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white rounded-lg shadow-md shadow-purple-500/20 transition">
+                    <span>+</span> Add Staff
+                </button>
+                <button onclick="openCsvModal()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition">
+                    <span>📥</span> Import CSV
+                </button>
+                <button onclick="openHostelSettingsModal()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-lg shadow-md shadow-amber-600/20 transition">
+                    <span>⚙️</span> Hostel Settings
+                </button>
+
+                <div class="text-right hidden sm:block pl-2 border-l border-slate-800">
+                    <span id="header-user-name" class="block text-xs font-bold text-white leading-tight">Hostel Admin</span>
+                    <span id="header-user-role" class="block text-[10px] text-purple-400 font-semibold uppercase">Administrator</span>
+                </div>
+                <button onclick="Auth.logout()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition">
+                    Sign Out
+                </button>
+                <button id="theme-toggle-btn" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition" title="Toggle Dark/Light Mode">
+                    <span class="theme-toggle-icon">☀️</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8">
+
+        <!-- Top Header & Quick Action Hub -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-900/90 to-purple-950/40 p-6 rounded-2xl border border-slate-800 shadow-xl">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">OPERATIONAL</span>
+                    <h1 class="text-2xl font-black text-white tracking-tight">Hostel Intelligence & People Hub</h1>
+                </div>
+                <p class="text-xs text-slate-400 mt-1">Manage hostel residents, staff officers, parent accounts, and real-time movement telemetry.</p>
+            </div>
+
+            <!-- Quick Action Hub Buttons -->
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="openAddStudentModal()" class="px-3.5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-lg shadow-blue-600/20 transition flex items-center gap-1.5">
+                    <span>🎓</span> + Student & Parent
+                </button>
+                <button onclick="openAddStaffModal('WARDEN')" class="px-3.5 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white rounded-xl shadow-lg shadow-purple-600/20 transition flex items-center gap-1.5">
+                    <span>🛡️</span> + Warden
+                </button>
+                <button onclick="openAddStaffModal('SECURITY_GUARD')" class="px-3.5 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-1.5">
+                    <span>👮</span> + Security Guard
+                </button>
+                <button onclick="openCsvModal()" class="px-3.5 py-2 text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl transition flex items-center gap-1.5">
+                    <span>📥</span> CSV Bulk
+                </button>
+                <button onclick="switchDirectoryTab('rooms'); document.getElementById('tab-btn-rooms').scrollIntoView({ behavior: 'smooth' });" class="px-3.5 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white rounded-xl shadow-lg shadow-teal-600/20 transition flex items-center gap-1.5">
+                    <span>🏢</span> Rooms & Floors
+                </button>
+                <button onclick="openHostelSettingsModal()" class="px-3.5 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-600/20 transition flex items-center gap-1.5">
+                    <span>⚙️</span> Edit Hostel
+                </button>
+                <button onclick="loadAdminDashboard()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl text-xs font-semibold border border-slate-800 transition">
+                    ↻ Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- OPERATIONAL INTELLIGENCE SCORE & HEALTH HEADER -->
+        <section class="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/40 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-xl font-black text-indigo-400">
+                        🛡️
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-lg font-black text-white tracking-tight">Hostel Operational Intelligence Score</h2>
+                            <span id="op-grade-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                                OPTIMAL
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400">Multi-source institutional index derived from real-time PostgreSQL compliance and gate telemetry.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-baseline gap-2">
+                    <span id="op-score-num" class="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-400">—</span>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">/ 100 PTS</span>
+                </div>
+            </div>
+
+            <!-- 4 Component Score Bars -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+                <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">Movement Compliance</span>
+                        <span id="op-comp-score" class="font-mono text-emerald-400 font-bold">— / 35</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="op-comp-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 80%"></div>
+                    </div>
+                    <span id="op-comp-label" class="text-[10px] text-slate-400 block">—</span>
+                </div>
+
+                <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">Gate Verification</span>
+                        <span id="op-gate-score" class="font-mono text-blue-400 font-bold">— / 25</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="op-gate-bar" class="h-full bg-blue-500 transition-all duration-500" style="width: 80%"></div>
+                    </div>
+                    <span id="op-gate-label" class="text-[10px] text-slate-400 block">—</span>
+                </div>
+
+                <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">Anomaly Resolution</span>
+                        <span id="op-anom-score" class="font-mono text-purple-400 font-bold">— / 20</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="op-anom-bar" class="h-full bg-purple-500 transition-all duration-500" style="width: 80%"></div>
+                    </div>
+                    <span id="op-anom-label" class="text-[10px] text-slate-400 block">—</span>
+                </div>
+
+                <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">Policy & Geofence</span>
+                        <span id="op-geo-score" class="font-mono text-teal-400 font-bold">— / 20</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="op-geo-bar" class="h-full bg-teal-500 transition-all duration-500" style="width: 80%"></div>
+                    </div>
+                    <span id="op-geo-label" class="text-[10px] text-slate-400 block">—</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics Strip (8 Key KPI Cards) -->
+        <section class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-slate-700 transition">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Students</span>
+                <span id="m-total" class="text-xl font-black text-white mt-0.5 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-emerald-800 transition">
+                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Inside Hostel</span>
+                <span id="m-inside" class="text-xl font-black text-emerald-400 mt-0.5 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-amber-800 transition">
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Currently Out</span>
+                <span id="m-outside" class="text-xl font-black text-amber-400 mt-0.5 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-blue-800 transition">
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider block">Active Passes</span>
+                <span id="m-active-passes" class="text-xl font-black text-blue-400 mt-0.5 block">—</span>
+            </div>
+            <div onclick="scrollToApprovals()" class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-indigo-800 transition cursor-pointer group" title="Click to view & approve pending pass requests">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Pending Review</span>
+                    <span class="text-[9px] font-bold text-indigo-300 bg-indigo-950 px-1.5 py-0.5 rounded border border-indigo-800 group-hover:bg-indigo-900 transition">APPROVE ⚡</span>
+                </div>
+                <span id="m-pending" class="text-xl font-black text-indigo-400 mt-0.5 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-red-800 transition">
+                <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider block">Late Gate Returns</span>
+                <span id="m-overdue" class="text-xl font-black text-red-400 mt-0.5 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-purple-800 transition">
+                <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">High Risk</span>
+                <span id="m-high-risk" class="text-xl font-black text-purple-400 mt-0.5 block">—</span>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 hover:border-cyan-800 transition">
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block">Today Transit</span>
+                <span id="m-today" class="text-xl font-black text-cyan-400 mt-0.5 block">—</span>
+            </div>
+        </section>
+
+        <!-- MOVEMENT APPROVAL & PENDING PASSES QUEUE (CHIEF ADMIN & WARDEN DESK) -->
+        <section id="section-approvals" class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-black">
+                        ⚡
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                            Student Movement Approval Queue
+                            <span id="badge-pending-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950 text-indigo-400 border border-indigo-800">0 Pending</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Chief Hostel Administrator & Warden authorization desk. Approving issues cryptographic QR token instantly.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="/warden.html" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition flex items-center gap-1.5">
+                        <span>🛡️</span> Open Warden Portal ↗
+                    </a>
+                    <button onclick="loadPendingPassesQueue()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition">
+                        ↻ Refresh Queue
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">Student</th>
+                            <th class="py-3 px-4">Pass Type</th>
+                            <th class="py-3 px-4">Destination & Reason</th>
+                            <th class="py-3 px-4">Time Window</th>
+                            <th class="py-3 px-4">AI Risk Assessment</th>
+                            <th class="py-3 px-4 text-right">Administrative Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-pending-passes-body">
+                        <tr><td colspan="6" class="py-6 text-center text-xs text-slate-500">Checking pending requests from database...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- INSTITUTIONAL DIRECTORY & MEMBERS HUB (STUDENTS, STAFF, PARENTS, ROOMS) -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+            <!-- Directory Navigation Tabs -->
+            <div class="border-b border-slate-800 bg-slate-900/90 px-6 pt-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar">
+                    <button id="tab-btn-students" onclick="switchDirectoryTab('students')" class="px-4 py-2.5 rounded-t-xl text-xs font-bold text-blue-400 border-b-2 border-blue-500 bg-slate-800/60 flex items-center gap-2">
+                        <span>🎓 Resident Students</span>
+                        <span id="count-badge-students" class="px-2 py-0.5 text-[10px] rounded-full bg-blue-900/50 text-blue-300 font-mono">0</span>
+                    </button>
+                    <button id="tab-btn-staff" onclick="switchDirectoryTab('staff')" class="px-4 py-2.5 rounded-t-xl text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2">
+                        <span>🛡️ Wardens & Security Guards</span>
+                        <span id="count-badge-staff" class="px-2 py-0.5 text-[10px] rounded-full bg-slate-800 text-slate-400 font-mono">0</span>
+                    </button>
+                    <button id="tab-btn-parents" onclick="switchDirectoryTab('parents')" class="px-4 py-2.5 rounded-t-xl text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2">
+                        <span>👨‍👩‍👧 Parents & Guardians</span>
+                        <span id="count-badge-parents" class="px-2 py-0.5 text-[10px] rounded-full bg-slate-800 text-slate-400 font-mono">0</span>
+                    </button>
+                    <button id="tab-btn-rooms" onclick="switchDirectoryTab('rooms')" class="px-4 py-2.5 rounded-t-xl text-xs font-semibold text-slate-400 hover:text-white flex items-center gap-2">
+                        <span>🏢 Rooms & Bed Capacity</span>
+                        <span id="count-badge-rooms" class="px-2 py-0.5 text-[10px] rounded-full bg-slate-800 text-slate-400 font-mono">0</span>
+                    </button>
+                </div>
+
+                <!-- Live Search & Filter Bar -->
+                <div class="pb-3 flex items-center gap-2 w-full sm:w-auto">
+                    <div class="relative flex-1 sm:w-64">
+                        <input type="text" id="dir-search" oninput="filterDirectory()" placeholder="Search name, roll no, room..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                        <span class="absolute right-3 top-2 text-xs text-slate-500">🔍</span>
+                    </div>
+                    <select id="dir-status-filter" onchange="filterDirectory()" class="bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-blue-500">
+                        <option value="">All Status</option>
+                        <option value="IN_HOSTEL">In Hostel</option>
+                        <option value="OUTSIDE">Outside</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tab Content 1: Students Directory -->
+            <div id="dir-panel-students" class="p-6">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="py-3 px-4">Resident Student</th>
+                                <th class="py-3 px-4">Roll Number</th>
+                                <th class="py-3 px-4">Course / Branch</th>
+                                <th class="py-3 px-4">Room & Block</th>
+                                <th class="py-3 px-4">Movement State</th>
+                                <th class="py-3 px-4">Linked Guardian</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body">
+                            <tr><td colspan="7" class="py-8 text-center text-xs text-slate-500">Loading student directory from database...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Staff & Security Officers -->
+            <div id="dir-panel-staff" class="p-6 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-xs text-slate-400">Institutional staff accounts with authorized portal permissions.</p>
+                    <button onclick="openAddStaffModal()" class="px-3 py-1.5 text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition">
+                        + Add Staff Member
+                    </button>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="py-3 px-4">Staff Member</th>
+                                <th class="py-3 px-4">Institutional Role</th>
+                                <th class="py-3 px-4">Contact Email</th>
+                                <th class="py-3 px-4">Phone</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4">Onboarded</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-table-body">
+                            <tr><td colspan="6" class="py-8 text-center text-xs text-slate-500">Loading staff records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content 3: Parents Registry -->
+            <div id="dir-panel-parents" class="p-6 hidden">
+                <p class="text-xs text-slate-400 mb-4">Verified parent and guardian accounts linked to resident students for transparent transit tracking.</p>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                <th class="py-3 px-4">Parent / Guardian</th>
+                                <th class="py-3 px-4">Relationship</th>
+                                <th class="py-3 px-4">Contact Phone</th>
+                                <th class="py-3 px-4">Login Email</th>
+                                <th class="py-3 px-4">Ward Student</th>
+                                <th class="py-3 px-4">Allocated Room</th>
+                            </tr>
+                        </thead>
+                        <tbody id="parents-table-body">
+                            <tr><td colspan="6" class="py-8 text-center text-xs text-slate-500">Loading parent accounts...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content 4: Rooms & Beds (Manual Creation & Management) -->
+            <div id="dir-panel-rooms" class="p-6 hidden space-y-6">
+                <!-- Controls & KPI Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-bold text-white uppercase tracking-wider">🏢 Campus Wings, Floors &amp; Rooms</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-950 text-teal-400 border border-teal-800">Manual Controls</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">Admin manually adds floors, creates rooms, and sets bed capacities without auto-dummy data.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="openAddFloorModal()" class="px-3.5 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white rounded-xl shadow-md shadow-teal-600/20 transition flex items-center gap-1.5">
+                            <span>+</span> Add Floor (फ्लोर जोड़ें)
+                        </button>
+                        <button onclick="openAddRoomModal()" class="px-3.5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-md shadow-blue-600/20 transition flex items-center gap-1.5">
+                            <span>+</span> Add Room (कमरा जोड़ें)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Floors Breakdown -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Physical Floors</span>
+                        <span id="floors-summary-badge" class="text-xs text-slate-400">Loading floors...</span>
+                    </div>
+                    <div id="floors-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <p class="text-xs text-slate-500 col-span-full text-center py-4">Loading campus floors...</p>
+                    </div>
+                </div>
+
+                <!-- Rooms Matrix & Table -->
+                <div class="space-y-3 pt-2 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">All Hostel Rooms &amp; Bed Allocations</span>
+                            <span class="text-[11px] text-slate-500 ml-2" id="rooms-summary-text">0 Total Rooms</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs">
+                            <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Available Beds
+                            </span>
+                            <span class="text-red-400 font-semibold flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-red-400"></span> Fully Occupied
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Room Cards Grid -->
+                    <div id="rooms-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <p class="text-xs text-slate-500 col-span-full text-center py-6">Loading room occupancy matrix...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Grid (Hourly Movement Line Chart + Pass Type Doughnut) -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Hourly Movement Flow (Exits vs Inbound)</h3>
+                        <p class="text-xs text-slate-500">Continuous 24-hour distribution across institutional gates.</p>
+                    </div>
+                </div>
+                <div class="h-64 w-full">
+                    <canvas id="hourly-movement-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="mb-4">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Pass Type Breakdown</h3>
+                    <p class="text-xs text-slate-500">Distribution by movement category.</p>
+                </div>
+                <div class="h-64 w-full">
+                    <canvas id="pass-types-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEXA AI RESOURCE OPTIMIZATION & PREDICTIVE DEMAND FORECASTER -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-lg">
+                        ⚡
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                            AI Resource Optimization & Predictive Demand Forecaster
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                                Smart Analytics
+                            </span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Transforming multi-source movement telemetry into actionable security staffing, lane balancing, and food waste reduction.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="renderAiInsights()" class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 transition">
+                        ↻ Refresh AI Models
+                    </button>
+                </div>
+            </div>
+
+            <!-- Top Row: Predictive Surge Forecaster + Mess Food Resource Optimizer -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Predictive Movement Surge Forecaster -->
+                <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            <span>📈</span> Predictive Transit Surge Forecaster
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-950 text-blue-400 border border-blue-800">
+                            14-Day Time Series
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 bg-slate-900 border border-slate-800/80 rounded-lg">
+                            <span class="text-[10px] text-slate-400 uppercase block font-semibold">Predicted Peak Exit Surge</span>
+                            <span id="pred-peak-exit" class="text-sm font-black text-amber-400 block mt-1">5:00 PM – 7:00 PM</span>
+                            <span class="text-[10px] text-slate-500">Highest outbound density</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 border border-slate-800/80 rounded-lg">
+                            <span class="text-[10px] text-slate-400 uppercase block font-semibold">Predicted Peak Return Surge</span>
+                            <span id="pred-peak-return" class="text-sm font-black text-emerald-400 block mt-1">8:30 PM – 9:30 PM</span>
+                            <span class="text-[10px] text-slate-500">Pre-gate rush window</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-blue-950/30 border border-blue-900/40 rounded-lg text-xs space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300">Predicted Total Transits Today:</span>
+                            <span id="pred-transits-today" class="font-bold text-white font-mono">—</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300">Primary Institutional Chokepoint:</span>
+                            <span id="pred-busiest-gate" class="font-bold text-blue-400 font-mono">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dining Hall & Zero Food Waste Resource Optimizer -->
+                <div class="bg-slate-950/70 border border-emerald-950/60 rounded-xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            <span>🍽️</span> Mess &amp; Food Operations (Zero Food Waste)
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                                Live Attendance Sync
+                            </span>
+                            <button onclick="openMessSlipModal()" class="px-2.5 py-1 text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition flex items-center gap-1 shadow-sm">
+                                <span>🖨️</span> Mess Slip
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="mess-advice-text" class="text-xs text-slate-300 leading-relaxed">
+                        Live meal headcount synced with turnstile gate telemetry and home leaves.
+                    </p>
+
+                    <!-- Meal Session Forecasts -->
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                            <span class="text-[10px] text-slate-400 block font-medium">🍳 Breakfast</span>
+                            <span id="mess-bf-plates" class="text-base font-black text-white mt-0.5 block">—</span>
+                            <span class="text-[9px] text-slate-500">Plates</span>
+                        </div>
+                        <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                            <span class="text-[10px] text-slate-400 block font-medium">🍲 Lunch</span>
+                            <span id="mess-lunch-plates" class="text-base font-black text-white mt-0.5 block">—</span>
+                            <span class="text-[9px] text-slate-500">Plates</span>
+                        </div>
+                        <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg">
+                            <span class="text-[10px] text-slate-400 block font-medium">🍽️ Dinner</span>
+                            <span id="mess-din-plates" class="text-base font-black text-white mt-0.5 block">—</span>
+                            <span class="text-[9px] text-slate-500">Plates</span>
+                        </div>
+                    </div>
+
+                    <!-- Resident Status & Savings Strip -->
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
+                        <div class="p-2 bg-slate-900/60 border border-amber-900/40 rounded-lg">
+                            <span class="text-[10px] text-amber-400 block font-semibold">Away on Home Leave</span>
+                            <span id="mess-absent-count" class="text-sm font-black text-amber-400 mt-0.5 block">—</span>
+                        </div>
+                        <div class="p-2 bg-slate-900/60 border border-emerald-900/40 rounded-lg">
+                            <span class="text-[10px] text-emerald-400 block font-semibold">Food Waste Saved</span>
+                            <span id="mess-food-saved" class="text-sm font-black text-emerald-400 mt-0.5 block">—</span>
+                        </div>
+                        <div class="p-2 bg-slate-900/60 border border-indigo-900/40 rounded-lg">
+                            <span class="text-[10px] text-indigo-400 block font-semibold">Cost Savings</span>
+                            <span id="mess-cost-saved" class="text-sm font-black text-indigo-400 mt-0.5 block">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Security Staffing & Tactical Allocation Advisories -->
+            <div class="space-y-3 pt-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🛡️</span> Actionable Security Staffing Recommendations
+                    </span>
+                    <span class="text-[11px] text-slate-500">Autonomous Heuristic Optimizer</span>
+                </div>
+                <div id="ai-insights-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-xs text-slate-500">Generating resource optimization recommendations...</p>
+                </div>
+            </div>
+
+            <!-- Gate Load & Traffic Balancing Matrix -->
+            <div class="space-y-3 pt-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🚪</span> Institutional Gate Load Balancing Matrix
+                    </span>
+                    <span class="text-[11px] text-slate-500">Continuous 7-Day Velocity</span>
+                </div>
+                <div id="gates-matrix-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <p class="text-xs text-slate-500 col-span-full py-4 text-center">Loading gate load matrix...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Behavioral Anomaly Radar -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <span>🛡️</span> Algorithmic Behavioral Anomaly Radar
+                    </h3>
+                    <p class="text-xs text-slate-500">Flags movement velocity spikes, recurrent overdue patterns, and scan deviations without biased profiling.</p>
+                </div>
+                <span class="text-xs text-slate-400">PostgreSQL Relational Scanner</span>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">Detected</th>
+                            <th class="py-3 px-4">Anomaly Category</th>
+                            <th class="py-3 px-4">Subject</th>
+                            <th class="py-3 px-4">Description & Empirical Evidence</th>
+                            <th class="py-3 px-4">Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="anomalies-table-body">
+                        <tr><td colspan="5" class="py-6 text-center text-xs text-slate-500">Scanning for behavioral anomalies...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Immutable System Audit Log -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">System Audit Trail</h3>
+                    <p class="text-xs text-slate-500">Immutable security ledger capturing logins, approvals, gate events, and policy adjustments.</p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <th class="py-2.5 px-3">Timestamp</th>
+                            <th class="py-2.5 px-3">Actor Email</th>
+                            <th class="py-2.5 px-3">Role</th>
+                            <th class="py-2.5 px-3">Action</th>
+                            <th class="py-2.5 px-3">Target</th>
+                            <th class="py-2.5 px-3">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audit-table-body">
+                        <tr><td colspan="6" class="py-6 text-center text-xs text-slate-500">Loading audit records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: ALLOCATE / CHANGE STUDENT ROOM -->
+    <!-- ========================================================================= -->
+    <div id="modal-allocate-room" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-black">
+                        🛏️
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Allocate / Change Room</h3>
+                        <p id="alloc-student-info" class="text-[11px] text-slate-400">Select an available room for this student.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleAllocateRoomSubmit(event)" class="space-y-4">
+                <input type="hidden" id="alloc-student-id">
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Select Campus Room *</label>
+                    <select id="alloc-room-select" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="">-- Choose Available Room --</option>
+                    </select>
+                    <p class="text-[10px] text-slate-500 mt-1">Shows rooms with available bed capacity in the current hostel.</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeModals()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+                    <button type="submit" id="btn-submit-alloc-room" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-600/30">
+                        Confirm Room Allocation →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 1: ONBOARD STUDENT & AUTO-GENERATE PARENT ACCOUNT -->
+    <!-- ========================================================================= -->
+    <div id="modal-add-student" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-black">
+                        🎓
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Onboard Resident Student</h3>
+                        <p class="text-[11px] text-slate-400">Creates student credentials and automatically generates linked Parent account.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleCreateStudent(event)" class="space-y-4">
+                <!-- Step 1: Student Information -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider">1. Resident Student Details</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Full Name *</label>
+                            <input type="text" id="m-stu-name" required placeholder="e.g. Vikramaditya Roy" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">College Roll Number *</label>
+                            <input type="text" id="m-stu-roll" required placeholder="e.g. 2026CSE099" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono uppercase focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Student Official Email *</label>
+                            <input type="email" id="m-stu-email" required placeholder="vikram@institution.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Login Password *</label>
+                            <input type="password" id="m-stu-pass" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Mobile Phone *</label>
+                            <input type="tel" id="m-stu-phone" required placeholder="+91-9876543210" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Course & Year</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="m-stu-course" placeholder="Course (e.g. B.Tech)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500">
+                                <select id="m-stu-year" class="bg-slate-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white">
+                                    <option value="1">Year 1</option>
+                                    <option value="2">Year 2</option>
+                                    <option value="3">Year 3</option>
+                                    <option value="4">Year 4</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room Assignment -->
+                    <div>
+                        <label class="block text-xs text-slate-400 font-semibold mb-1">Allocate Campus Room</label>
+                        <select id="m-stu-room" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                            <option value="">-- Select Available Room --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 2: Parent / Guardian Information -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">2. Guardian & Parent Account (Auto-Provisioned)</h4>
+                        <span class="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">Login Role: PARENT</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Guardian Full Name *</label>
+                            <input type="text" id="m-guard-name" required placeholder="e.g. Debabrata Roy" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Guardian Phone *</label>
+                            <input type="tel" id="m-guard-phone" required placeholder="+91-9876500099" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-emerald-400 font-bold mb-1">Guardian Real Email * (Pass Verification &amp; Parent Portal)</label>
+                            <input type="email" id="m-guard-email" required placeholder="parent@gmail.com" class="w-full bg-slate-950 border border-emerald-600/50 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                            <span class="text-[10px] text-slate-400 block mt-0.5">Real email required. Parent portal login credentials and pass alerts sent directly here (Zero dummy emails).</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Relationship</label>
+                            <select id="m-guard-rel" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                                <option value="FATHER">Father</option>
+                                <option value="MOTHER">Mother</option>
+                                <option value="LEGAL_GUARDIAN">Legal Guardian</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        💡 Default Parent login password is set to <code class="text-blue-400">Parent@123</code>. The parent can immediately access the Parent Portal (<code class="text-slate-300">parent.html</code>) using their email.
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="btn-submit-stu" class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">
+                        Register Student & Create Parent Account →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 2: ADD STAFF MEMBER (WARDEN / SECURITY GUARD) -->
+    <!-- ========================================================================= -->
+    <div id="modal-add-staff" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-black">
+                        🛡️
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Register Staff Officer</h3>
+                        <p class="text-[11px] text-slate-400">Onboard a Hostel Warden or Gate Security Officer.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleCreateStaff(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Institutional Role *</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-700 bg-slate-950 cursor-pointer text-xs">
+                            <input type="radio" name="staffRole" value="WARDEN" checked class="text-purple-600">
+                            <span class="font-bold text-white">Hostel Warden</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-700 bg-slate-950 cursor-pointer text-xs">
+                            <input type="radio" name="staffRole" value="SECURITY_GUARD" class="text-purple-600">
+                            <span class="font-bold text-white">Security Guard</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Full Name *</label>
+                    <input type="text" id="m-staff-name" required placeholder="e.g. Dr. Rajesh Sharma" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Official Email Address *</label>
+                    <input type="email" id="m-staff-email" required placeholder="warden.sharma@institution.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Temporary Password *</label>
+                    <input type="password" id="m-staff-pass" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Mobile Contact Phone</label>
+                    <input type="tel" id="m-staff-phone" placeholder="+91-9876543210" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="btn-submit-staff" class="px-5 py-2 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/30">
+                        Create Staff Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 3: BULK IMPORT STUDENTS (CSV) -->
+    <!-- ========================================================================= -->
+    <div id="modal-import-csv" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-black">
+                        📥
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Bulk Student CSV Import</h3>
+                        <p class="text-[11px] text-slate-400">Instantly onboard tens or hundreds of students with automatic accounts.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Paste CSV data below with column headers:</span>
+                    <button type="button" onclick="loadSampleCsvText()" class="text-xs text-blue-400 hover:underline font-semibold">Load Sample CSV</button>
+                </div>
+                <textarea id="csv-import-textarea" rows="8" placeholder="full_name, roll_number, email, phone, course, branch, year&#10;[Paste your student records below this header row]" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono focus:outline-none focus:border-blue-500 custom-scrollbar"></textarea>
+                <p id="csv-preview-badge" class="text-xs text-slate-400">Ready to import.</p>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                <button type="button" onclick="submitCsvImport()" id="btn-submit-csv" class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">
+                    Parse & Import Roster →
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ========================================================================= -->
+    <!-- MODAL 4: EDIT HOSTEL SETTINGS & CONFIGURATION -->
+    <!-- ========================================================================= -->
+    <div id="modal-hostel-settings" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center font-black text-lg">
+                        🏢
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Hostel Profile &amp; Settings (छात्रावास सेटिंग्स)</h3>
+                        <p class="text-[11px] text-slate-400">Hostel ka naam, gate timings, address aur campus geofence update karein.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleSaveHostelSettings(event)" class="space-y-5">
+                <!-- Section 1: Hostel Identity -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🏛️</span> 1. Institutional Identity &amp; Contact
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Hostel Name *</label>
+                            <input type="text" id="edit-hostel-name" required placeholder="e.g. NBH - A &amp; B Block" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Institution / University *</label>
+                            <input type="text" id="edit-institution-name" required placeholder="e.g. BBD University" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Hostel Type *</label>
+                            <select id="edit-hostel-type" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                                <option value="BOYS">Boys Hostel</option>
+                                <option value="GIRLS">Girls Hostel</option>
+                                <option value="CO-ED">Co-Ed Campus</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Official Contact Phone *</label>
+                            <input type="tel" id="edit-hostel-phone" required placeholder="+91-9876543210" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Official Email Address *</label>
+                            <input type="email" id="edit-hostel-email" required placeholder="hostel@institution.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Campus Street Address *</label>
+                            <input type="text" id="edit-hostel-address" required placeholder="Campus Road, Sector 5" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">City *</label>
+                            <input type="text" id="edit-hostel-city" required placeholder="City" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs text-slate-400 font-semibold mb-1">State *</label>
+                                <input type="text" id="edit-hostel-state" required placeholder="State" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 font-semibold mb-1">Pincode *</label>
+                                <input type="text" id="edit-hostel-pincode" required placeholder="Pincode" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Gate Timings & Rules -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🕒</span> 2. Gate Timings &amp; Access Rules (गेट समय एवं नियम)
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Boys Gate Closing * (बॉयज गेट समय)</label>
+                            <input type="time" id="edit-boys-gate-closing" required value="21:30" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Girls Gate Closing * (गर्ल्स गेट समय)</label>
+                            <input type="time" id="edit-girls-gate-closing" required value="20:30" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Grace Buffer (Minutes) *</label>
+                            <input type="number" id="edit-grace-minutes" required value="15" min="0" max="180" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <input type="hidden" id="edit-gate-closing-time" value="21:30">
+                    <div class="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-slate-300 flex items-start gap-2">
+                        <span class="text-base">🏡</span>
+                        <div>
+                            <strong class="text-white block font-semibold">Home Pass &amp; Leave Policy (घर जाने का नियम):</strong>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Din ki koi rigid pabandi nahi hai. Student kisi bhi required duration ke liye leave request apply kar sakta hai jo Warden aur Parent approval ke baad active hoti hai.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Checkpoint Location & Radius -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>📍</span> 3. Campus Gate Checkpoint &amp; Verification Boundary
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Gate Latitude *</label>
+                            <input type="number" step="any" id="edit-hostel-lat" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Gate Longitude *</label>
+                            <input type="number" step="any" id="edit-hostel-lng" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 font-semibold mb-1">Verification Radius (m) *</label>
+                            <input type="number" id="edit-hostel-radius" required min="30" max="1000" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500">💡 Standard gate radius: 100 meters. Pass scans are verified within this physical distance of the main gate.</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="btn-save-hostel-settings" class="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-lg shadow-amber-600/30 flex items-center gap-1.5 transition">
+                        <span>💾</span> Save Configuration Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 5: ADD PHYSICAL FLOOR (MANUAL FLOOR CREATION) -->
+    <!-- ========================================================================= -->
+    <div id="modal-add-floor" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-teal-600/20 text-teal-400 flex items-center justify-center font-black text-lg">
+                        🏢
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Add Physical Floor (नया फ्लोर जोड़ें)</h3>
+                        <p class="text-[11px] text-slate-400">Add a floor level to your hostel wing / block.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleCreateFloor(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Select Hostel Block / Wing *</label>
+                    <select id="m-floor-block" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-teal-500">
+                        <option value="">-- Select Block --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Floor Level Number * (e.g. 1, 2, 3)</label>
+                    <input type="number" id="m-floor-num" required min="0" max="50" placeholder="1" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-teal-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Floor Display Name (Optional)</label>
+                    <input type="text" id="m-floor-name" placeholder="e.g. Ground Floor or 1st Floor - Wing A" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-teal-500">
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="btn-submit-floor" class="px-5 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-lg shadow-teal-600/30">
+                        Create Floor Level →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 6: ADD HOSTEL ROOM (MANUAL ROOM CREATION) -->
+    <!-- ========================================================================= -->
+    <div id="modal-add-room" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-lg">
+                        🚪
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Add Campus Room (नया कमरा जोड़ें)</h3>
+                        <p class="text-[11px] text-slate-400">Manually add a room and set its bed capacity.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <form onsubmit="handleCreateRoom(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Select Floor Level *</label>
+                    <select id="m-room-floor" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <option value="">-- Select Floor --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Room Number * (कमरा संख्या)</label>
+                    <input type="text" id="m-room-number" required placeholder="e.g. 101, 204, A-12" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono uppercase focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 font-semibold mb-1">Total Bed Capacity * (बिस्तरों की संख्या)</label>
+                    <input type="number" id="m-room-capacity" required min="1" max="12" value="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-blue-500">
+                    <span class="text-[10px] text-slate-500 block mt-1">Single (1), Double (2), Triple (3), Dorm (4+)</span>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeModals()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="btn-submit-room" class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">
+                        Add Room to Floor →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 7: DAILY MESS HEADCOUNT & MEAL SLIP (PRINTABLE) -->
+    <!-- ========================================================================= -->
+    <div id="modal-mess-slip" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar text-slate-200">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-lg">
+                        🍽️
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Mess Contractor Food Roster Slip</h3>
+                        <p class="text-[11px] text-slate-400">Official daily plate requisition slip (दैनिक मेस भोजन पर्ची)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="printMessSlip()" class="px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg flex items-center gap-1 shadow-md">
+                        <span>🖨️</span> Print Slip
+                    </button>
+                    <button type="button" onclick="closeModals()" class="text-slate-400 hover:text-white p-1">✕</button>
+                </div>
+            </div>
+
+            <div id="printable-mess-slip-content" class="bg-white text-slate-900 p-6 rounded-2xl border border-slate-300 space-y-4 font-sans text-xs">
+                <div class="text-center border-b-2 border-slate-900 pb-3">
+                    <h2 id="slip-hostel-name" class="text-base font-black uppercase tracking-wider">HOSTEL MESS COMMAND</h2>
+                    <p id="slip-institution-name" class="text-xs text-slate-600">Institutional Dining &amp; Catering Department</p>
+                    <p class="text-[11px] font-bold mt-1 text-slate-800">DAILY MEAL REQUISITION &amp; HEADCOUNT SLIP</p>
+                    <div class="flex justify-between items-center text-[10px] text-slate-500 mt-2 font-mono">
+                        <span>Date: <strong id="slip-date" class="text-slate-900">—</strong></span>
+                        <span>Generated: <strong id="slip-time" class="text-slate-900">—</strong></span>
+                        <span>Status: <strong class="text-emerald-700">ACTIVE TELEMETRY</strong></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-3 bg-slate-100 rounded-lg border border-slate-300">
+                        <span class="text-[10px] text-slate-500 block uppercase font-bold">Total Enrolled Residents</span>
+                        <span id="slip-total-residents" class="text-lg font-black text-slate-900 block mt-0.5">0</span>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-300">
+                        <span class="text-[10px] text-emerald-700 block uppercase font-bold">Present in Hostel (Eating)</span>
+                        <span id="slip-present-eating" class="text-lg font-black text-emerald-800 block mt-0.5">0</span>
+                    </div>
+                    <div class="p-3 bg-amber-50 rounded-lg border border-amber-300">
+                        <span class="text-[10px] text-amber-700 block uppercase font-bold">Away on Home Leave</span>
+                        <span id="slip-absent-home" class="text-lg font-black text-amber-800 block mt-0.5">0</span>
+                    </div>
+                </div>
+
+                <table class="w-full text-left border-collapse border border-slate-300 text-xs">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                            <th class="p-2 border-r border-slate-300">Meal Session</th>
+                            <th class="p-2 border-r border-slate-300">Serving Window</th>
+                            <th class="p-2 border-r border-slate-300 text-center">Home Leave Deductions</th>
+                            <th class="p-2 text-right">Net Plates to Cook</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-200">
+                            <td class="p-2 font-bold border-r border-slate-300">🍳 Breakfast</td>
+                            <td class="p-2 text-slate-600 border-r border-slate-300">07:30 AM – 09:30 AM</td>
+                            <td class="p-2 text-center text-red-600 font-bold border-r border-slate-300" id="slip-bf-deduct">-0</td>
+                            <td class="p-2 text-right font-black text-slate-900 text-sm" id="slip-bf-plates">0</td>
+                        </tr>
+                        <tr class="border-b border-slate-200">
+                            <td class="p-2 font-bold border-r border-slate-300">🍲 Lunch</td>
+                            <td class="p-2 text-slate-600 border-r border-slate-300">12:30 PM – 02:30 PM</td>
+                            <td class="p-2 text-center text-red-600 font-bold border-r border-slate-300" id="slip-lunch-deduct">-0</td>
+                            <td class="p-2 text-right font-black text-slate-900 text-sm" id="slip-lunch-plates">0</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 font-bold border-r border-slate-300">🍽️ Dinner</td>
+                            <td class="p-2 text-slate-600 border-r border-slate-300">07:30 PM – 09:30 PM</td>
+                            <td class="p-2 text-center text-red-600 font-bold border-r border-slate-300" id="slip-din-deduct">-0</td>
+                            <td class="p-2 text-right font-black text-slate-900 text-sm" id="slip-din-plates">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] text-slate-600 space-y-1">
+                    <p><strong>Note for Mess Contractor:</strong> Plates count is verified directly from active gate turnstiles and approved student leave requests. Home leave residents are deducted to prevent food wastage.</p>
+                </div>
+
+                <div class="pt-6 flex justify-between items-end text-[11px] text-slate-700">
+                    <div class="text-center">
+                        <div class="w-40 border-b border-slate-400 mb-1"></div>
+                        <span class="font-bold">Hostel Warden / Administrator</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-40 border-b border-slate-400 mb-1"></div>
+                        <span class="font-bold">Chief Mess Supervisor / Caterer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/theme.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/assistant.js"></script>
+</body>
+</html>

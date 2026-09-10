@@ -4,7 +4,7 @@
   <img src="assets/logo.png" alt="NEXA-GUARD Logo" width="125"/>
 </p>
 
-<h2 align="center">AI-Powered Smart Hostel Movement, Autonomous Approval & Safety Intelligence Platform</h2>
+<h2 align="center">AI-Powered Smart Hostel Movement, Safety & Resource Intelligence Platform</h2>
 
 <p align="center">
   <b>Smarter Movement. Safer Hostels.</b>
@@ -33,7 +33,7 @@ It connects:
 
 > **Student → Warden → Security Gate → Parent → Hostel Administration**
 
-The platform is designed to move hostel operations from a basic paper/register workflow to a **verified, automated and intelligence-driven movement lifecycle**.
+The platform transforms hostel movement from a basic register workflow into a **verified, policy-aware and intelligence-driven movement lifecycle**.
 
 ```text
 MOVEMENT EVENT
@@ -42,9 +42,9 @@ POLICY VALIDATION
       ↓
 GPS / GEOFENCE VERIFICATION
       ↓
-EXPLAINABLE AI / RULE ENGINE
+EXPLAINABLE INTELLIGENCE
       ↓
-AUTOMATED APPROVAL OR HUMAN ESCALATION
+AUTOMATED APPROVAL / HUMAN ESCALATION
       ↓
 SECURE QR + RETURN CODE
       ↓
@@ -63,10 +63,10 @@ RESOURCE OPTIMIZATION
 
 # 🏆 Smart India Hackathon 2026
 
-NEXA-GUARD was built for **SIH 2026** around the intelligent use of hostel movement data for:
+NEXA-GUARD was developed for **SIH 2026** around the intelligent use of hostel movement data for:
 
-- safety-oriented movement verification
 - smart automation
+- safety-oriented movement verification
 - proactive monitoring
 - operational analytics
 - security resource planning
@@ -76,41 +76,39 @@ NEXA-GUARD was built for **SIH 2026** around the intelligent use of hostel movem
 
 ```text
 DATA COLLECTION
-        ↓
+      ↓
 POLICY VALIDATION
-        ↓
+      ↓
 EXPLAINABLE INTELLIGENCE
-        ↓
-AUTOMATED / HUMAN DECISION
-        ↓
+      ↓
+AUTOMATION / HUMAN DECISION
+      ↓
 SECURE MOVEMENT
-        ↓
+      ↓
 ACTIONABLE INSIGHTS
-        ↓
+      ↓
 RESOURCE OPTIMIZATION
 ```
 
 ---
 
-# 🎯 Problem Statement
+# 🎯 Problem
 
-Traditional hostel movement management can be:
+Traditional hostel movement workflows can be:
 
 - paper-heavy
 - slow at the gate
 - difficult to monitor in real time
-- vulnerable to invalid or outdated passes
 - dependent on manual follow-up for late returns
+- vulnerable to invalid or expired movement credentials
 - disconnected from parent communication
-- unable to turn historical movement records into useful operational insights
+- unable to turn historical movement records into operational intelligence
 
-NEXA-GUARD addresses these gaps through one connected platform.
+NEXA-GUARD addresses these gaps through a single connected platform.
 
 ---
 
-# 💡 Core Innovation — From Paper Registers to Safety Intelligence
-
-NEXA-GUARD is more than a digital outpass form.
+# 💡 From Paper Registers to Movement Intelligence
 
 ### Traditional
 
@@ -135,9 +133,9 @@ Policy Engine
    ↓
 Location Verification
    ↓
-AI / Intelligence
+Explainable Intelligence
    ↓
-Auto-Approve or Warden Escalation
+Automatic Processing / Human Escalation
    ↓
 Secure Digital Pass
    ↓
@@ -145,24 +143,22 @@ Gate Verification
    ↓
 Live Movement State
    ↓
-Alerts
+Alerts & Notifications
    ↓
-Analytics
+Analytics & Anomaly Detection
    ↓
-Prediction
-   ↓
-Resource Optimization
+Prediction & Resource Optimization
 ```
 
 ---
 
-# 🌟 Core Innovations
+# 🌟 Core Capabilities
 
-## 1. 🤖 Explainable AI Autonomous Approval Engine
+## 🤖 1. Explainable Autonomous Approval
 
-Routine, policy-compliant requests can follow the configured **autonomous approval path**.
+Routine, policy-compliant low-risk requests can follow the configured **autonomous approval path**.
 
-The engine evaluates supported signals such as:
+The intelligence layer considers supported operational signals such as:
 
 - request timing
 - requested duration
@@ -173,97 +169,94 @@ The engine evaluates supported signals such as:
 - policy compliance
 - relevant risk indicators
 
-High-risk or exception cases can be escalated to a **Warden Triage Queue**.
+Exception and higher-risk cases can be escalated to authorized hostel staff for review.
 
-The system produces an explainable result rather than silently making an opaque decision.
+> **Automation handles routine work; authorized staff retain control over exceptions and overrides.**
 
 ---
 
-## 2. 🎓 Academic-Hours Protection
+## 🎓 2. Academic-Hours Protection
 
-Hostel policies can define restricted academic/lecture windows for casual movement.
+Hostel administrators can configure restricted academic windows for casual movement.
 
-Example policy configuration can restrict non-emergency movement during:
+Example:
 
 ```text
 09:00 AM → 04:30 PM
 ```
 
-Emergency movement remains separately configurable.
+The exact timings are **policy-configurable**, not a universal hard-coded rule.
 
-**Important:** the timings are policy configuration, not hard-coded assumptions.
+Emergency movement can follow separate policy rules.
 
 ---
 
-## 3. 🚪 Gate Closing & Return Deadline Intelligence
+## 🚪 3. Gate Timing & Return Compliance
 
-Hostels can configure gate timings and return deadlines according to their own institutional rules.
-
-NEXA-GUARD evaluates:
+NEXA-GUARD evaluates return compliance using configured:
 
 ```text
-Pass Return Time
-       +
+Expected Return
+      +
 Gate Closing Deadline
-       +
+      +
 Grace Period
-       ↓
+      ↓
 Return Compliance Signal
 ```
 
-This allows different hostels to configure their own operational policies rather than depending on one fixed rule.
+Different hostels can configure their own operational timings and policies.
 
 ---
 
-## 4. 🏠 Flexible Multi-Day Home Pass
+## 🏠 4. Flexible Multi-Day Home Pass
 
 Students can request multi-day home passes according to institutional policy.
 
-The platform supports configurable duration and escalation rules instead of forcing a single arbitrary maximum.
-
-Longer or exceptional requests can be routed for additional verification, such as guardian confirmation and warden review.
+Exceptional or extended requests can be routed for additional verification such as guardian confirmation or staff review.
 
 ---
 
-## 5. 🍽️ Mess & Food Operations Intelligence
+## 🍽️ 5. Mess & Dining Intelligence
 
-Movement data can be used to estimate hostel meal demand.
+Movement telemetry can support meal-demand estimation:
 
 ```text
-Student Movement
-       ↓
-Students Expected Inside
-       ↓
+Movement Data
+      ↓
+Expected Residents
+      ↓
 Meal Demand Estimation
-       ↓
+      ↓
 Preparation Planning
-       ↓
+      ↓
 Potential Waste Reduction
 ```
 
-The system can support breakfast, lunch and dinner demand estimation where sufficient historical/operational data exists.
-
-> Estimates should always be treated as data-driven operational forecasts, not guaranteed savings.
+Breakfast, lunch and dinner estimates can be generated where sufficient operational and historical data exists.
 
 ---
 
-## 6. 🔐 Secure Gate Return Verification
+## 🔐 6. Secure Gate Verification
 
-The gate terminal can combine multiple verification mechanisms supported by the implementation, including:
+The gate workflow validates:
 
-- server-side QR validation
+- server-issued QR token
 - secure return code
-- movement state validation
+- pass validity
+- expiry
+- movement state
+- prior-use state
 - configured identity checks
 - optional camera/biometric verification where enabled
 
-Biometric capability should be described as a **verification mechanism**, not as a guarantee of zero proxy movement.
+The backend—not the browser—is the source of truth.
 
 ---
 
-## 7. 🏢 Manual Hostel Infrastructure Management
+## 🏢 7. Configurable Hostel Infrastructure
 
-Hostel administrators can configure the physical hostel structure:
+Administrators can manage:
 
 - Blocks
 - Floors
@@ -272,39 +265,70 @@ Hostel administrators can configure the physical hostel structure:
 - Gates
 - Security Zones
 - Policies
+- Students
+- Staff
 
-The model is designed so that the institutional structure is configurable rather than locked to a fixed hostel layout.
-
----
-
-## 8. 📝 Professional Administrative Terminology
-
-The interface uses operational language such as:
-
-- **Gate Timings**
-- **Gate Closing Deadline**
-- **Late Gate Return**
-- **Movement Status**
-- **Policy Deviation**
-- **Behavioral Anomaly**
-
-This keeps the product suitable for institutional use.
+The system is designed around configurable institutional structure rather than a fixed hostel layout.
 
 ---
 
-## 9. 👨‍👩‍👦 Authentic Parent / Guardian Onboarding
+## 📍 8. Event-Based Geofencing
 
-Guardian information can be captured during student onboarding and linked through a dedicated parent–ward relationship.
+NEXA-GUARD uses location as a **contextual verification signal**, not as continuous resident surveillance.
 
-Parents receive only authorized information for their linked student.
+Typical events:
+
+```text
+PASS REQUEST
+     ↓
+LOCATION CHECK
+     ↓
+EXIT VERIFICATION
+     ↓
+RETURN VERIFICATION
+```
+
+The backend performs the authoritative geofence calculation.
+
+> **Privacy principle:** verify the movement event that matters instead of continuously tracking hostel residents.
 
 ---
 
-# 🤖 NEXA AI — Institutional Intelligence Assistant
+## 🧠 9. Behavioral Anomaly Detection
 
-NEXA AI is not intended to be a generic FAQ chatbot.
+Supported anomaly patterns can include:
 
-It follows a controlled application-data architecture:
+- unusually high movement frequency
+- repeated late returns
+- repeated failed gate verification
+- location mismatch
+- unusual movement timing
+- repeated cancelled/expired passes
+- policy deviations
+
+The platform reports these as **movement anomalies / unusual activity**, not as unsupported criminal classifications.
+
+---
+
+## 📈 10. Predictive Movement Intelligence
+
+Historical movement data can support:
+
+- time-slot pattern analysis
+- day-of-week patterns
+- movement-demand estimation
+- gate-load forecasting
+- operational planning
+
+Predictions are **estimates**, not guarantees.
+
+---
+
+# 🤖 NEXA AI — Role-Aware Institutional Assistant
+
+NEXA AI is designed as a **context-aware assistant connected to authorized application data**, not as a generic FAQ chatbot.
+
+### Architecture
 
 ```text
 USER QUESTION
@@ -317,7 +341,7 @@ INTENT DETECTION
       ↓
 CONTROLLED DATA TOOL
       ↓
-AUTHORIZED PARAMETERIZED QUERY
+PARAMETERIZED QUERY
       ↓
 LIVE POSTGRESQL DATA
       ↓
@@ -326,35 +350,36 @@ CONTEXT
 NEXA AI RESPONSE
 ```
 
-### Example
+### Example Questions
 
 **Student**
 
 > “Mera current pass status kya hai?”
 
-The system identifies the authenticated student and retrieves only that student's authorized pass data.
-
 **Warden**
 
 > “Abhi kitne students hostel ke bahar hain?”
 
-The system uses a hostel-scoped data tool to retrieve the current movement state.
+**Admin**
+
+> “Aaj ka busiest gate kaunsa hai?”
 
 **Parent**
 
 > “Mera ward hostel mein hai?”
 
-The system uses the authenticated parent–ward relationship to return only the linked student's status.
+### AI Guardrails
 
-### Security Principle
+NEXA AI cannot:
 
-NEXA AI does **not** follow:
+- access another student's private records
+- bypass role permissions
+- access another hostel's data
+- execute arbitrary SQL
+- directly modify database records
+- perform sensitive actions without required authorization
 
-```text
-User → LLM → Arbitrary SQL → Database
-```
-
-It follows:
+### Safe Data Access Model
 
 ```text
 User
@@ -376,21 +401,21 @@ AI Response
 
 ---
 
-# 🧠 Intelligence Modules
+# 🧠 Intelligence Layer
 
 ```text
-┌───────────────────────────────────────────┐
-│            NEXA-GUARD INTELLIGENCE        │
-├───────────────────────────────────────────┤
-│ Explainable Risk Engine                   │
-│ Behavioral Anomaly Detection              │
-│ Personal Movement Baseline                │
-│ Predictive Movement Intelligence           │
-│ Gate / Security Resource Optimizer        │
-│ Mess / Dining Demand Forecast             │
-│ Operational Intelligence                 │
-│ NEXA AI Assistant                         │
-└───────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│             NEXA-GUARD INTELLIGENCE          │
+├──────────────────────────────────────────────┤
+│ Explainable Risk Engine                      │
+│ Behavioral Anomaly Detection                 │
+│ Personal Movement Baseline                   │
+│ Predictive Movement Intelligence             │
+│ Gate / Security Resource Optimizer           │
+│ Mess / Dining Demand Forecast                │
+│ Operational Intelligence                     │
+│ NEXA AI Assistant                            │
+└──────────────────────────────────────────────┘
 ```
 
 ---
@@ -402,15 +427,15 @@ flowchart TD
     A[Student] --> B[Create Pass Request]
     B --> C[Policy Validation]
     C --> D[Event-Based GPS / Geofence]
-    D --> E[Explainable AI / Risk Analysis]
+    D --> E[Explainable Intelligence]
     E --> F{Decision}
-    F -->|Routine & Policy Compliant| G[Autonomous Approval]
-    F -->|Exception / High Risk| H[Warden Triage]
+    F -->|Routine / Policy Compliant| G[Autonomous Approval]
+    F -->|Exception / Higher Risk| H[Warden / Staff Review]
     G --> I[Secure QR + Return Code]
     H --> I
     I --> J[Gate Verification]
     J --> K[OUTSIDE]
-    K --> L[Late / Curfew Monitoring]
+    K --> L[Late / Return Monitoring]
     K --> M[Parent / Warden Notification]
     L --> N{Returned?}
     N -->|Yes| O[Return Verification]
@@ -438,28 +463,28 @@ flowchart TD
 │ HTML5 │ Tailwind CSS │ Vanilla JavaScript               │
 │ Leaflet │ Chart.js │ Geolocation │ QR Scanner           │
 └──────────────────────────┬───────────────────────────────┘
-                           │ HTTPS
+                           │ HTTPS / REST
                            ▼
 ┌──────────────────────────────────────────────────────────┐
-│                    API / SECURITY LAYER                   │
+│                  API / SECURITY LAYER                     │
 │                                                          │
 │ Node.js + Express.js                                     │
 │ JWT │ RBAC │ Validation │ Rate Limiting                 │
-│ Helmet │ CORS │ Tenant Isolation │ Audit                │
+│ Helmet │ CORS │ Tenant Isolation │ Audit Logs            │
 └──────────────────────────┬───────────────────────────────┘
                            │
                            ▼
 ┌──────────────────────────────────────────────────────────┐
-│              BUSINESS + INTELLIGENCE LAYER               │
+│           BUSINESS + INTELLIGENCE LAYER                  │
 │                                                          │
 │ Pass │ Policy │ Geofence │ Gate │ QR                    │
 │ Risk │ Anomaly │ Baseline │ Prediction                  │
-│ Resource Optimizer │ Notifications │ NEXA AI            │
+│ Optimizer │ Notifications │ NEXA AI                     │
 └──────────────────────────┬───────────────────────────────┘
                            │
                            ▼
 ┌──────────────────────────────────────────────────────────┐
-│                      DATA LAYER                           │
+│                       DATA LAYER                          │
 │                    PostgreSQL 16                          │
 │                                                          │
 │ Students │ Parents │ Passes │ Movements │ Gates         │
@@ -480,21 +505,21 @@ flowchart TD
 - **Chart.js**
 - **Browser Geolocation API**
 - **QR scanning libraries**
-- **HTML5 Canvas / WebRTC** where biometric verification is enabled
+- **HTML5 Canvas / WebRTC** for optional biometric verification
 
 ## Backend
 
 - **Node.js 18+**
 - **Express.js**
 - RESTful API architecture
-- Modular controllers, services, middleware and AI modules
+- Modular controllers, services and middleware
 
 ## Database
 
 - **PostgreSQL 16**
-- normalized relational schema
+- relational schema
 - foreign keys
-- check constraints
+- constraints
 - indexes
 - transactional movement updates
 
@@ -510,7 +535,6 @@ flowchart TD
 - parameterized SQL
 - HMAC-SHA256 QR tokens
 - audit logging
-- secure activation tokens
 
 ## Intelligence
 
@@ -530,7 +554,9 @@ flowchart TD
 
 ---
 
-# 🔐 Security Architecture
+# 🔐 Security & Privacy
+
+NEXA-GUARD follows a least-privilege and server-authoritative security model.
 
 ```text
 User
@@ -548,137 +574,86 @@ Authorized Resource
 PostgreSQL
 ```
 
-### Security controls
+### Key controls
 
 | Control | Purpose |
 |---|---|
-| JWT | Authenticated sessions |
-| RBAC | Role-specific permissions |
-| Tenant Isolation | Prevent cross-hostel access |
-| bcrypt | Password protection |
+| JWT | Authenticated session identity |
+| RBAC | Role-based authorization |
+| Tenant Isolation | Prevent cross-hostel data access |
+| bcrypt | Password hashing |
 | Helmet | HTTP security headers |
 | CORS | Controlled origins |
 | Rate Limiting | Abuse / brute-force mitigation |
 | Parameterized Queries | SQL injection protection |
 | HMAC-SHA256 | QR token integrity |
-| Audit Logs | Sensitive-action traceability |
-| Parent-Ward Link | Restricted guardian access |
-
----
-
-# 📍 Privacy-First Location Verification
-
-NEXA-GUARD uses location as **contextual verification**, not continuous surveillance.
-
-Typical events:
-
-```text
-PASS REQUEST
-     ↓
-LOCATION CHECK
-     ↓
-EXIT VERIFICATION
-     ↓
-RETURN VERIFICATION
-```
-
-The backend performs the authoritative distance calculation.
-
-> **Privacy principle:** verify the movement event that matters instead of continuously tracking hostel residents.
+| Audit Logs | Trace sensitive operations |
+| Parent-Ward Link | Restrict parent access |
 
 ---
 
 # 📱 Role-Based Portals
 
-### 🎓 Student Portal
+### 🎓 Student
 
-- Pass application
-- Home pass
-- Emergency exit
-- Active digital QR
-- Return code
-- Movement history
-- Notifications
-- NEXA AI
+Passes • Active QR • Return Code • Movement History • Alerts • NEXA AI
 
-### 🧑‍🏫 Warden Portal
+### 🧑‍🏫 Warden
 
-- Approval / triage queue
-- Risk & intelligence signals
-- Exceptions
-- Late-return monitoring
-- Anomaly review
-- Movement visibility
+Requests • Risk Signals • Exceptions • Overdue Monitoring • Anomalies
 
-### 🛡️ Security Guard Portal
+### 🛡️ Security Guard
 
-- QR scanning
-- Server-side validation
-- Exit authorization
-- Return verification
-- ALLOW / BLOCK / REVIEW result
+QR Scan • Gate Verification • Exit • Return
 
-### 👨‍👩‍👦 Parent Portal
+### 👨‍👩‍👦 Parent
 
-- Linked ward only
-- Movement status
-- Pass status
-- Return information
-- Important alerts
+Linked Ward • Movement Status • Pass Status • Important Alerts
 
-### 🏢 Hostel Admin Command Center
+### 🏢 Hostel Admin
 
-- Hostel configuration
-- Students / staff
-- Rooms / blocks / gates
-- Policies
-- Movement analytics
-- Anomaly radar
-- Resource optimization
-- Operational intelligence
-
-The project documentation defines these role-specific portals and their workflows. fileciteturn17file4L371-L377
+Hostel Setup • Students • Staff • Policies • Analytics • Resource Intelligence
 
 ---
 
 # 🖥️ Working Prototype
 
-> Add only **real screenshots from the current NEXA-GUARD implementation**. Do not use fabricated UI as evidence.
+> Add only **real screenshots from the current implementation**. Avoid using mock UI as proof of implementation.
 
-### Student Portal
+### 🎓 Student Portal
 
 <p align="center">
   <img src="assets/student_portal.png" alt="NEXA-GUARD Student Portal" width="96%">
 </p>
 
-### Warden Portal
+### 🧑‍🏫 Warden Portal
 
 <p align="center">
   <img src="assets/warden_portal.png" alt="NEXA-GUARD Warden Portal" width="96%">
 </p>
 
-### Security Guard Portal
+### 🛡️ Security Guard Portal
 
 <p align="center">
   <img src="assets/guard_portal.png" alt="NEXA-GUARD Security Guard Portal" width="96%">
 </p>
 
-### Admin Command Center
+### 🏢 Admin Command Center
 
 <p align="center">
   <img src="assets/admin_portal.png" alt="NEXA-GUARD Admin Command Center" width="96%">
 </p>
 
-### Parent Portal
+### 👨‍👩‍👦 Parent Portal
 
 <p align="center">
   <img src="assets/parent_portal.png" alt="NEXA-GUARD Parent Portal" width="96%">
 </p>
 
-### Hostel Onboarding Wizard
+### ⚙️ Hostel Onboarding Wizard
 
 <p align="center">
-  <img src="assets/hostel_onboarding_wizard.png" alt="NEXA-GUARD Onboarding Wizard" width="96%">
+  <img src="assets/hostel_onboarding_wizard.png" alt="NEXA-GUARD Hostel Onboarding Wizard" width="96%">
 </p>
 
 ---
@@ -688,14 +663,12 @@ The project documentation defines these role-specific portals and their workflow
 ```text
 SYSTEM EVENT
       ↓
-Notification Service
-     / \
-    /   \
-   ↓     ↓
-IN-APP  EMAIL
+NOTIFICATION SERVICE
+      ↓
+ ┌───────────────┐
+ │               │
+IN-APP          EMAIL
 ```
-
-### Example routing
 
 | Event | Recipient | Channel |
 |---|---|---|
@@ -710,13 +683,11 @@ IN-APP  EMAIL
 | Password Reset | User | Email |
 | Fine Issued | Student | In-app + Email |
 
-The project's verified notification/email design includes these event categories. fileciteturn17file13L1255-L1280
+Email is used selectively for high-value or important events rather than every routine movement event.
 
 ---
 
 # 📊 Resource Optimization
-
-NEXA-GUARD can convert movement telemetry into operational recommendations:
 
 ```text
 Gate Events
@@ -727,24 +698,25 @@ Peak Movement Detection
     ↓
 Load Analysis
     ↓
-Guard / Gate Recommendation
+Security / Gate Recommendation
 ```
 
 Potential outputs:
 
 - peak exit windows
+- peak return windows
 - gate bottlenecks
-- uneven utilization
+- uneven gate utilization
 - suggested security coverage
 - estimated dining demand
 
-These recommendations are intended to support institutional decisions rather than automatically replace them.
+Recommendations support institutional decisions; they do not automatically replace them.
 
 ---
 
 # 🚨 Alerts & Fine Management
 
-Supported operational events can include:
+Supported operational events include:
 
 ```text
 LATE_RETURN
@@ -757,7 +729,7 @@ UNAUTHORIZED_MOVEMENT
 EMERGENCY
 ```
 
-Late-return processing can:
+Late-return workflow:
 
 ```text
 Expected Return
@@ -770,42 +742,82 @@ Alert
       ↓
 Warden / Parent Notification
       ↓
-Fine Workflow where policy requires
+Fine Workflow (where policy requires)
 ```
 
-The fine is an administrative record in the MVP; it does not automatically charge real money.
+Fines are administrative records in the MVP and do not automatically charge real money.
 
 ---
 
-# 🧪 Verification
+# 🔌 API Highlights
 
-The latest project audit reports:
+```http
+POST /api/auth/login
+
+POST /api/passes/requests
+GET  /api/passes/requests
+POST /api/passes/requests/:id/approve
+POST /api/passes/requests/:id/reject
+
+POST /api/gate/scan
+POST /api/gate/exit
+POST /api/gate/entry
+
+POST /api/ai/risk-score
+POST /api/ai/assistant
+GET  /api/ai/anomalies
+GET  /api/ai/insights
+
+GET  /api/notifications
+GET  /api/analytics/overview
+GET  /api/analytics/movements
+```
+
+See `docs/api.md` for the full API reference.
+
+---
+
+# ✅ Verification
+
+### Latest Verified Build
 
 - **31 PostgreSQL tables**
-- **8 verified frontend portals**
-- **44 tests passed**
+- **8 application interfaces**
+- **44 automated tests passed**
 - **0 failed**
-- **100% pass rate**
 
-The verification includes authentication, RBAC, parent privacy, cross-hostel isolation, pass creation, QR verification, movement transitions, curfew monitoring, anomaly detection, resource insights, notifications and live-data NEXA AI access. fileciteturn17file2L209-L218 fileciteturn17file9L750-L797
+Verified areas include:
 
-> Keep these figures synchronized with the exact commit/release published on GitHub.
+- authentication
+- RBAC
+- parent privacy
+- cross-hostel isolation
+- pass creation
+- policy validation
+- QR security
+- gate verification
+- exit/return state transitions
+- late-return monitoring
+- anomaly detection
+- notifications
+- resource intelligence
+- NEXA AI live-data authorization
+
+> Keep these figures synchronized with the exact GitHub revision being published.
 
 ---
 
-# 🎬 SIH Demonstration Flow
-
-For a judge demonstration:
+# 🎬 Recommended SIH Demo
 
 ```text
 01  Student Login
 02  Create Pass
 03  Policy Validation
-04  GPS / Geofence Check
-05  AI / Risk Result
-06  Auto-Approval or Warden Escalation
+04  GPS / Geofence Verification
+05  Intelligence / Risk Result
+06  Automatic Approval or Staff Escalation
 07  Secure QR Generation
-08  Guard Scans QR
+08  Guard Verification
 09  Student → OUTSIDE
 10  Return Verification
 11  Student → IN_HOSTEL
@@ -815,23 +827,15 @@ For a judge demonstration:
 15  Resource Recommendation
 ```
 
-### Suggested NEXA AI live questions
+### Strong NEXA AI Demo Questions
 
-**Student**
+> **Student:** “Mera current pass status kya hai?”
 
-> “Mera current pass status kya hai?”
+> **Warden:** “Abhi kitne students hostel ke bahar hain?”
 
-**Warden**
+> **Admin:** “Aaj ka busiest gate kaunsa hai?”
 
-> “Abhi kitne students hostel ke bahar hain?”
-
-**Admin**
-
-> “Aaj ka busiest gate kaunsa hai?”
-
-**Parent**
-
-> “Mera ward hostel mein hai?”
+> **Parent:** “Mera ward hostel mein hai?”
 
 ---
 
@@ -876,28 +880,28 @@ NEXA-GUARD/
 │   ├── student.html
 │   └── parent.html
 │
-├── screenshots/
+├── assets/
+│   ├── logo.png
 │   ├── student-portal.png
 │   ├── warden-portal.png
 │   ├── guard-portal.png
 │   ├── admin-portal.png
 │   ├── parent-portal.png
-│   └── onboarding-wizard.png
+│   ├── onboarding-wizard.png
+│   └── alpha-gate-team.png
 │
-├── team/
-│   └── alpha-gate-team.jpg
-│
-├── assets/
-│   └── logo.png
+├── docs/
+│   ├── architecture.md
+│   ├── api.md
+│   ├── setup.md
+│   └── FINAL-AUDIT.md
 │
 └── README.md
 ```
 
-The underlying project documentation describes this modular backend/frontend organization and the dedicated AI modules. fileciteturn17file12L1095-L1112
-
 ---
 
-# ⚙️ Local Setup
+# ⚙️ Local Development
 
 ## Prerequisites
 
@@ -906,20 +910,20 @@ The underlying project documentation describes this modular backend/frontend org
 - PostgreSQL 16 recommended
 - Modern browser with Geolocation support
 
-## Clone
+## 1. Clone
 
 ```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd NEXA-GUARD
 ```
 
-## Database
+## 2. Database
 
 ```sql
 CREATE DATABASE nexaguard;
 ```
 
-## Environment
+## 3. Environment
 
 Create:
 
@@ -927,44 +931,33 @@ Create:
 backend/.env
 ```
 
-Use `backend/.env.example` for configuration.
+Use `backend/.env.example` as the configuration template.
 
-Example structure:
+Never commit:
 
-```env
-PORT=5000
-NODE_ENV=development
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=YOUR_DATABASE_PASSWORD
-DB_NAME=nexaguard
-
-JWT_SECRET=YOUR_LONG_RANDOM_SECRET
-JWT_EXPIRES_IN=7d
-
-SMTP_HOST=YOUR_SMTP_HOST
-SMTP_PORT=587
-SMTP_USER=YOUR_SMTP_USER
-SMTP_PASSWORD=YOUR_SMTP_PASSWORD
-SMTP_FROM=YOUR_FROM_ADDRESS
+```text
+.env
+database passwords
+JWT secrets
+SMTP credentials
+API keys
+real personal credentials
 ```
 
-## Install
+## 4. Install Dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
-## Initialize
+## 5. Initialize Database
 
-Run the database migration/schema process defined by the current repository revision.
+Run the migration/schema workflow defined by the current repository revision.
 
-For demonstration environments, use only clearly identified synthetic/demo data.
+Use only clearly identified synthetic/demo data for demonstration environments.
 
-## Start
+## 6. Start
 
 ```bash
 node server.js
@@ -978,9 +971,7 @@ http://localhost:5000
 
 ---
 
-# 🧭 Roadmap
-
-Future enhancements may include:
+# 🛣️ Future Scope
 
 - institution-trained ML prediction models
 - richer forecasting
@@ -994,32 +985,30 @@ Future enhancements may include:
 
 ---
 
-# 👨‍💻 Team Alpha Gate
+# 👥 Team Alpha Gate
 
 ## Built for Smart India Hackathon 2026
 
 <p align="center">
-  <img src="assets/team.png" alt="Alpha Gate Team" width="850">
+  <img src="assets/team.png" alt="Team Alpha Gate — NEXA-GUARD" width="850"/>
 </p>
 
-### Team Members
-
-| Member | Role | Contribution |
+| 👤 Member | 🎯 Role | 💡 Contribution |
 |---|---|---|
-| **Ajay Chauhan** | Team Lead / Full Stack | Architecture, integration, backend & product direction |
-| **[Member 2 Name]** | [Role] | [Contribution] |
-| **[Member 3 Name]** | [Role] | [Contribution] |
-| **[Member 4 Name]** | [Role] | [Contribution] |
-| **[Member 5 Name]** | [Role] | [Contribution] |
-| **[Member 6 Name]** | [Role] | [Contribution] |
+| **Ajay Chauhan** | **Full Stack Developer** | System architecture, backend integration, core development & product direction |
+| **Abhishek Dwivedi** | **API & Integration Developer** | REST API integration, frontend–backend connectivity & feature integration |
+| **Piyush Kumar** | **Ideation & Solution Strategy** | Problem analysis, solution design, innovation & feature planning |
+| **Anchal Dubey** | **UI/UX & Frontend Contributor** | Interface design, user experience & frontend enhancement |
+| **Aman Kumar Pandey** | **Testing & Documentation** | Functional testing, validation, documentation & presentation support |
+| **Rahul Chaudhary** | **Database & Data Management** | PostgreSQL database design, data handling & database integration |
 
-> **Team note:** The project materials available to me verify **Ajay Chauhan** as a team member, but they do not contain the remaining Alpha Gate member names. I have intentionally left those fields as placeholders instead of inventing names. Replace them with the exact names from your SIH 2026 team registration before publishing.
+> **One Team. One Vision. Smarter Movement. Safer Hostels.**
 
 ---
 
 # 🔒 Public GitHub Security Checklist
 
-Before making this repository public:
+Before publishing:
 
 - [ ] `.env` is ignored
 - [ ] No database passwords committed
@@ -1038,8 +1027,6 @@ Before making this repository public:
 
 # 📚 Documentation
 
-Recommended supporting documentation:
-
 ```text
 docs/
 ├── architecture.md
@@ -1047,8 +1034,6 @@ docs/
 ├── setup.md
 └── FINAL-AUDIT.md
 ```
-
-The project already maintains architecture, API, setup and audit documentation for the implementation. fileciteturn18file17L480-L487
 
 ---
 
@@ -1084,13 +1069,13 @@ PREDICT
 OPTIMIZE
 ```
 
-> **NEXA-GUARD converts hostel movement from a record-keeping workflow into a verified and intelligence-driven operational system.**
+> **NEXA-GUARD converts hostel movement from a record-keeping workflow into a verified, intelligence-driven operational system.**
 
 ---
 
 ## ❤️ Team Alpha Gate
 
-**NEXA-GUARD 2.0**  
+**NEXA-GUARD**  
 **Smart India Hackathon 2026**
 
 > *Smarter Movement. Safer Hostels.*

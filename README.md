@@ -648,37 +648,37 @@ The project documentation defines these role-specific portals and their workflow
 ### Student Portal
 
 <p align="center">
-  <img src="assests/student_portal.png" alt="NEXA-GUARD Student Portal" width="96%">
+  <img src="assets/student_portal.png" alt="NEXA-GUARD Student Portal" width="96%">
 </p>
 
 ### Warden Portal
 
 <p align="center">
-  <img src="assests/warden_portal.png" alt="NEXA-GUARD Warden Portal" width="96%">
+  <img src="assets/warden_portal.png" alt="NEXA-GUARD Warden Portal" width="96%">
 </p>
 
 ### Security Guard Portal
 
 <p align="center">
-  <img src="assests/guard_portal.png" alt="NEXA-GUARD Security Guard Portal" width="96%">
+  <img src="assets/guard_portal.png" alt="NEXA-GUARD Security Guard Portal" width="96%">
 </p>
 
 ### Admin Command Center
 
 <p align="center">
-  <img src="assests/admin_portal.png" alt="NEXA-GUARD Admin Command Center" width="96%">
+  <img src="assets/admin_portal.png" alt="NEXA-GUARD Admin Command Center" width="96%">
 </p>
 
 ### Parent Portal
 
 <p align="center">
-  <img src="assests/parent_portal.png" alt="NEXA-GUARD Parent Portal" width="96%">
+  <img src="assets/parent_portal.png" alt="NEXA-GUARD Parent Portal" width="96%">
 </p>
 
 ### Hostel Onboarding Wizard
 
 <p align="center">
-  <img src="assests/hostel_onboarding_wizard.png" alt="NEXA-GUARD Onboarding Wizard" width="96%">
+  <img src="assets/hostel_onboarding_wizard.png" alt="NEXA-GUARD Onboarding Wizard" width="96%">
 </p>
 
 ---
@@ -999,7 +999,7 @@ Future enhancements may include:
 ## Built for Smart India Hackathon 2026
 
 <p align="center">
-  <img src="assests/team.png" alt="Alpha Gate Team" width="850">
+  <img src="assets/team.png" alt="Alpha Gate Team" width="850">
 </p>
 
 ### Team Members
